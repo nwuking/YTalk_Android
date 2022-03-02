@@ -18,7 +18,6 @@ import com.nwuking.ytalk.OperateFriendEnum;
 import com.nwuking.ytalk.R;
 import com.nwuking.ytalk.UserInfo;
 import com.nwuking.ytalk.db.Contacts;
-import com.nwuking.ytalk.db.ContactsDao;
 import com.nwuking.ytalk.db.MyDbUtil;
 import com.nwuking.ytalk.net.NetWorker;
 
@@ -99,20 +98,6 @@ public class NewFriendActivity extends BaseActivity {
         if(application.getMemberEntity()!=null){
             uAccountID = application.getMemberEntity().getuAccountID();
         }
-//		try {
-//			list = BaseActivity.getDb().findAll(Selector.from(NewFriendEntity.class).where(
-//					"uAccountID", "=",
-//					uAccountID));
-//			if (list != null) {
-//				newFriendAdapter = new NewFriendAdapter(this, list, handler);
-//				xlv_newfriend.setAdapter(newFriendAdapter);
-//			}
-//
-//		} catch (DbException e) {
-//
-//			e.printStackTrace();
-//		}
-
     }
 
     @Override

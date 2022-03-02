@@ -28,7 +28,7 @@ public class ChangeServerActivity extends BaseActivity {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btn_back:
+        /*    case R.id.btn_back:
             case R.id.btn_cancel:
                 finish();
                 break;
@@ -39,7 +39,7 @@ public class ChangeServerActivity extends BaseActivity {
                 else
                     Toast.makeText(this, "无效的端口号设置！", Toast.LENGTH_SHORT).show();
                 break;
-
+*/
             default:
                 break;
         }
@@ -48,7 +48,8 @@ public class ChangeServerActivity extends BaseActivity {
 
     @Override
     protected int getContentView() {
-        return R.layout.activity_changesever;
+//        return R.layout.activity_changesever;
+        return 0;
     }
 
     @Override
@@ -62,13 +63,13 @@ public class ChangeServerActivity extends BaseActivity {
     }
 
     private boolean saveServerInfoToSharedPreferences() {
-        mChatServerIp = ((EditText)findViewById(R.id.chat_server_ip)).getText().toString().trim();
+/*        mChatServerIp = ((EditText)findViewById(R.id.chat_server_ip)).getText().toString().trim();
         mChatServerPort =((EditText)findViewById(R.id.chat_server_port)).getText().toString().trim();
         mImgServerIp = ((EditText)findViewById(R.id.img_server_ip)).getText().toString().trim();
         mImgServerPort =((EditText)findViewById(R.id.img_server_port)).getText().toString().trim();
         mFileServerIp = ((EditText)findViewById(R.id.file_server_ip)).getText().toString().trim();
         mFileServerPort =((EditText)findViewById(R.id.file_server_port)).getText().toString().trim();
-
+*/
         if (!applySettings())
             return false;
 
@@ -106,7 +107,7 @@ public class ChangeServerActivity extends BaseActivity {
             mFileServerIp = NetWorker.getFileServerIp();
             mFileServerPort = String.valueOf(NetWorker.getFilePort());
         }
-
+/*
         ((EditText)findViewById(R.id.chat_server_ip)).setText(mChatServerIp);
         ((EditText)findViewById(R.id.chat_server_port)).setText(mChatServerPort);
 
@@ -115,6 +116,7 @@ public class ChangeServerActivity extends BaseActivity {
 
         ((EditText)findViewById(R.id.file_server_ip)).setText(mFileServerIp);
         ((EditText)findViewById(R.id.file_server_port)).setText(mFileServerPort);
+*/
     }
 
     private boolean applySettings(){

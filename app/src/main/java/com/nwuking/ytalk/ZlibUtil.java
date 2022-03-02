@@ -7,45 +7,6 @@ import java.util.zip.DataFormatException;
 import java.util.zip.Inflater;
 
 public final class ZlibUtil {
-    /**
-     * 解压数据
-     *
-     * @param gzipStr
-     * @return
-     */
-//    public static String decompress(String gzipStr) {
-//        if (gzipStr.equals("")) {
-//            return null;
-//        }
-//        byte[] t = AbBase64.decode(gzipStr);
-//
-//        Inflater decompresser = new Inflater();
-//        decompresser.setInput(t, 0, t.length);
-//        // 对byte[]进行解压，同时可以要解压的数据包中的某一段数据，就好像从zip中解压出某一个文件一样。
-//        byte[] result = new byte[t.length];
-//        try {
-//            int resultLength = decompresser.inflate(result); // 返回的是解压后的的数据包大小，
-//        } catch (DataFormatException e) {
-//            e.printStackTrace();
-//        }
-//        decompresser.end();
-//        return new String(result);
-//
-//    }
-//
-//    //压缩
-//    public static String compress(String data) {
-//        try {
-//            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-//            DeflaterOutputStream zos = new DeflaterOutputStream(bos);
-//            zos.write(data.getBytes());
-//            zos.close();
-//            return AbBase64.encode(bos.toByteArray());
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//        }
-//        return "ZIP_ERR";
-//    }
 
     public static String decompressString(byte[] bytes) {
         //Decompress the bytes // 开始解压,

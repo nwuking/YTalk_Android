@@ -1,13 +1,67 @@
 package com.nwuking.ytalk.activities;
 
+import android.annotation.SuppressLint;
+import android.content.ClipboardManager;
+import android.content.ContentResolver;
+import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Environment;
+import android.os.Message;
+import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.util.Log;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import me.maxwin.view.XListView;
+import com.nwuking.ytalk.ChatContent;
+import com.nwuking.ytalk.ChatMessage;
+import com.nwuking.ytalk.ChatSession;
+import com.nwuking.ytalk.ChattingAdapter;
+import com.nwuking.ytalk.ClientType;
+import com.nwuking.ytalk.ContentText;
+import com.nwuking.ytalk.FileInfo;
+import com.nwuking.ytalk.FromMessageEntity;
+import com.nwuking.ytalk.MainActivity;
+import com.nwuking.ytalk.Md5Util;
+import com.nwuking.ytalk.MessageTextEntity;
+import com.nwuking.ytalk.MsgType;
+import com.nwuking.ytalk.MyApplication;
+import com.nwuking.ytalk.PictureUtil;
+import com.nwuking.ytalk.R;
+import com.nwuking.ytalk.StringUtil;
+import com.nwuking.ytalk.TabbarEnum;
+import com.nwuking.ytalk.ToastUtils;
+import com.nwuking.ytalk.UserInfo;
+import com.nwuking.ytalk.UserSession;
+import com.nwuking.ytalk.XListView;
+import com.nwuking.ytalk.net.ChatMsgMgr;
+import com.nwuking.ytalk.net.ChatSessionMgr;
+import com.nwuking.ytalk.net.NetWorker;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+
 
 /*
  * @聊天页面（单聊或群聊页面）
@@ -126,7 +180,7 @@ public class ChattingActivity extends BaseActivity implements XListView.IXListVi
 
     @Override
     protected void initData() {
-        tvWindowTitle = (TextView) findViewById(R.id.tv_window_title);
+       tvWindowTitle = (TextView) findViewById(R.id.tv_window_title);
 
         int selfID = UserSession.getInstance().loginUser.get_userid();
 
@@ -161,24 +215,24 @@ public class ChattingActivity extends BaseActivity implements XListView.IXListVi
         else
             tvWindowTitle.setText("与" + mFriendNickName + "聊天中");
         // 点击事件
-        mSendTextEditor = (EditText) findViewById(R.id.text_editor);
-        mSendTextEditor.setOnFocusChangeListener(new OnFocusChangeListener() {
+       mSendTextEditor = (EditText) findViewById(R.id.text_editor);
+       mSendTextEditor.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
                     edittext_layout.setBackgroundResource(R.drawable.input_bar_bg_active);
                 } else {
-                    edittext_layout.setBackgroundResource(R.drawable.input_bar_bg_normal);
+                   edittext_layout.setBackgroundResource(R.drawable.input_bar_bg_normal);
                 }
             }
         });
 
-        mSendTextEditor.setOnClickListener(new OnClickListener() {
+        mSendTextEditor.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                edittext_layout.setBackgroundResource(R.drawable.input_bar_bg_active);
+               edittext_layout.setBackgroundResource(R.drawable.input_bar_bg_active);
                 iv_emoticons_normal.setVisibility(View.VISIBLE);
                 iv_emoticons_checked.setVisibility(View.INVISIBLE);
             }
@@ -201,7 +255,7 @@ public class ChattingActivity extends BaseActivity implements XListView.IXListVi
                         String uFilesize = ssa[2];
                         // makeTextShort(a);
                         mSendTextEditor.setText("");
-                        String strPath = FlamingoApplication.DEFAULT_APP_PATH + "/" + name;
+                        String strPath = MyApplication.DEFAULT_APP_PATH + "/" + name;
                         Bitmap bitmap = PictureUtil.decodePicFromFullPath(strPath);
                         final File file = saveMyBitmap(bitmap, name);
                         String strChecksum = Md5Util.getMD5(file);
@@ -246,38 +300,16 @@ public class ChattingActivity extends BaseActivity implements XListView.IXListVi
         // 获取群数据
         int nGroupID = mFriendID;
         if (UserInfo.isGroup(nGroupID)) {
-//			try {
-////				List<FriendInfo> list = BaseActivity.getDb().findAll(
-////						Selector.from(FriendInfo.class).where("mSelfID",
-////								"=", nGroupID));
-//				List<FriendInfo> list = null;
-//
-//				if (list != null) {
-//
-//					for (int i = 0; i < list.size(); ++i) {
-//						FriendInfo info = list.get(i);
-//						mapGroupMember.put(info.getuTargetID(), info);
-//					}
-//				}
-//			} catch (DbException e) {
-//
-//				e.printStackTrace();
-//			}
         }
-
-        //AppData.setRead(mSelfID, nGroupID);
 
         //加载历史消息
         if (mCurrentMessage.isEmpty()) {
-//            if (mFriendID > GROUP_ID_BOUNDARY) {
-//                mCurrentMessage = BaseActivity.getChatMsgDb().getChatMsgBySenderAndTargetID(mFriendID, mSenderID);
-//            } else {
-
-            // }
             refreshList();
         }
 
     }
+
+
 
     private void refreshList() {
         if (UserInfo.isGroup(mFriendID)) {
@@ -294,15 +326,11 @@ public class ChattingActivity extends BaseActivity implements XListView.IXListVi
             chatingAdapter = new ChattingAdapter(this, mCurrentMessage);
             chatting_lv.setAdapter(chatingAdapter);
         }
-
-        //滚动条滚动至底部
-        //chatting_lv.setSelection(chatingAdapter.getCount()-1);
-        //chatting_lv.setSelection(chatting_lv.getBottom());
     }
 
     @Override
     protected void setData() {
-        iv_sendPicture = (ImageView) findViewById(R.id.iv_sendPicture);
+//        iv_sendPicture = (ImageView) findViewById(R.id.iv_sendPicture);
         chatting_lv.setXListViewListener(this);
         chatting_lv.setPullRefreshEnable(true);
         chatting_lv.setPullLoadEnable(false);
@@ -314,90 +342,17 @@ public class ChattingActivity extends BaseActivity implements XListView.IXListVi
 
         chatting_lv.setLayoutParams(statusTextViewParams);
         iv_emoticons_checked.setOnClickListener(this);
-        view_photo = (LinearLayout) findViewById(R.id.view_photo);
+/*        view_photo = (LinearLayout) findViewById(R.id.view_photo);
         view_photo.setOnClickListener(this);
         view_camera = (LinearLayout) findViewById(R.id.view_camera);
         view_camera.setOnClickListener(this);
+
+ */
         // 转发
         type = getIntent().getStringExtra("type");
         msgtexts = getIntent().getStringExtra("msgtexts");
-        //if (!msgtexts.equals("")) {
-//			if (type.equals("")) {
-//				SendMessage sendMessage = new SendMessage();
-//				sendMessage.setmClientType(3);
-//				sendMessage.setFrom(mSenderID);
-//				sendMessage.setTo(mFriendID);
-//				sendMessage.setmMsgID(-1);
-//				sendMessage.setmMsgType(1);
-//				long epoch = System.currentTimeMillis() / 1000;
-//				sendMessage.setmMsgTime(epoch);
-//				List<Object> obj = new ArrayList<Object>();
-//				msgtexts = msgtexts.replace("||", "|");
-//				String[] ss = msgtexts.split("\\|");
-//				for (int i = 0; i < ss.length; i++) {
-//					Map<String, Object> map = new HashMap<String, Object>();
-//					String id = ss[i];
-//					if (id.startsWith("[") && id.endsWith("]")) {
-//						String faceId = id.substring(1, id.length() - 1);
-//						map.put("faceID", Integer.valueOf(faceId));
-//
-//					} else {
-//
-//						map.put("msgText", id);
-//					}
-//
-//					obj.add(map);
-//
-//				}
-//				sendMessage.setmContent(obj);
-//				talkmsg = JSON.toJSONString(sendMessage);
-//
-//				try {
-//					messages = new ChatMessage();
-//					messages.setSenderID(mSenderID);
-//					messages.setmMsgType(1);
-//					// uMsgID = tTalkMsgAns.getUMsgID() + 1;
-//					messages.setmMsgSenderClientType(1);
-//					messages.setTargetID(mFriendID);
-//
-//					messages.setmMsgTime(epoch);
-//					messages.setmMsgState(0);
-//
-//					List<ContentText> cons = new ArrayList<ContentText>();
-//					ContentText ct = new ContentText();
-//					ct.setMsgText(msgtexts);
-//					cons.add(ct);
-//					messages.setmContent(cons);
-//					BaseActivity.getDb().save(messages);
-//				} catch (DbException e) {
-//					e.printStackTrace();
-//				}
-//				con.sendChatMsg(mSenderID, mFriendID, uMsgID, talkmsg);
-//
-//			}else{
-//
-//				if (msgtexts.startsWith("([") && msgtexts.endsWith("])")) {
-//					String pics = msgtexts.substring(2, msgtexts.length() - 2);
-//					String pic = pics.replace("\"", "");
-//					String[] ssa = pic.split("\\,");
-//					String name = ssa[0];
-//					String uFilesize = ssa[2];
-//
-//					String strPath = FILE_BASE_DIR + name;
-//					bitmap = PictureUtil.decodePicFromFullPath(strPath);
-//					final File file = saveMyBitmap(bitmap, name);
-//					String strChecksum = MyMD5.getMD5(file);
-//					// String newFileName = uFilesize + strChecksum +
-//					// ".jpg";
-//					String newFileName = name;
-//					contwo.sendFileUpInfo(newFileName, strChecksum, 0,
-//							Long.parseLong(uFilesize));
-//					sendPicture(newFileName, strChecksum, 0,
-//							Long.parseLong(uFilesize));
-//				}
-//			}
+
     }
-    // }
 
     @Override
     protected void onResume() {
@@ -411,19 +366,6 @@ public class ChattingActivity extends BaseActivity implements XListView.IXListVi
     }
 
     public void sendChatMsg() {
-        //TODO: SendMessage类型最好和ChatMessage类型合并
-//		SendMessage sendMessage = new SendMessage();
-//		sendMessage.setmSenderClientType(ClientType.CLIENT_TYPE_ANDROID);
-//		sendMessage.setmSenderID(mSenderID);
-//		sendMessage.setmTargetID(mFriendID);
-//		String msgID = UUID.randomUUID().toString();
-//		sendMessage.setmMsgID(msgID);
-//		sendMessage.setmMsgType(ChatMessage.CONTENT_TYPE_TEXT);
-//		long msgTime = System.currentTimeMillis() / 1000;
-//		sendMessage.setmMsgTime(msgTime);
-//		List<Object> obj = new ArrayList<Object>();
-//		String rawChatMsg1 = mSendTextEditor.getText().toString();
-
 
         String rawChatMsg1 = mSendTextEditor.getText().toString().trim();
         if (rawChatMsg1.isEmpty()) {
@@ -513,15 +455,6 @@ public class ChattingActivity extends BaseActivity implements XListView.IXListVi
 
         ChatSessionMgr.getInstance().updateSession(mFriendID, mSelfName, chatContentJson, "", new Date());
 
-        //更新session列表
-//		ChatSession chatSession = AppData.updateChatSessionByFriendID(mFriendID);
-//		chatSession.setFriendNickName(mFriendNickName);
-//		//显示最后一条消息
-//		chatSession.setLastMsg(rawChatMsg1);
-//		chatSession.setFriendID(mFriendID);
-//		chatSession.setmSelfID(mSelfID);
-//		//在聊天窗口显示消息，当前session的可读消息为0
-//		chatSession.setUnreadCount(0);
     }
 
     public void loadfile(ChatMessage msg) {
@@ -544,84 +477,12 @@ public class ChattingActivity extends BaseActivity implements XListView.IXListVi
     }
 
     private int updateUnreadRecvMsgToReadState() {
-//		List<ChatMessage> pendingChatMessages = null;
-//		int nUpdateCount = 0;
-//		try {
-//
-//			pendingChatMessages = BaseActivity.getDb().findAll(
-//								Selector.from(ChatMessage.class)
-//										.where("mTargetID", "=", mSelfID)
-//										.and(WhereBuilder.b("mSenderID", "=", mFriendID)));
-//
-//			if (pendingChatMessages == null || pendingChatMessages.isEmpty())
-//				return nUpdateCount;
-//
-//			for(int i = 0; i < pendingChatMessages.size(); ++i)
-//			{
-//				ChatMessage msg = pendingChatMessages.get(i);
-//				if(msg == null)
-//				{
-//					pendingChatMessages.remove(i);
-//					i--;
-//					continue;
-//				}
-//
-//				//只处理未读消息
-//				if(msg.getMsgState() != ChatMessage.MSG_STATE_UNREAD)
-//				{
-//					pendingChatMessages.remove(i);
-//					i--;
-//					continue;
-//				}
-//			}
-//
-//			//没有未读消息，直接返回
-//			if (pendingChatMessages.isEmpty())
-//				return nUpdateCount;
-//
-//			ChatMessage chatMessage;
-//			for (int i = 0; i < pendingChatMessages.size(); ++i) {
-//				chatMessage = pendingChatMessages.get(i);
-//				chatMessage.setMsgState(ChatMessage.MSG_STATE_READ);
-//				BaseActivity.getDb().update(chatMessage);
-//
-//				++nUpdateCount;
-//			}
-//
-//		} catch (DbException e) {
-//			e.printStackTrace();
-//		}
-//
-//		return nUpdateCount;
+
         return 0;
     }
 
     public void setMessageFailed() {
-//		if (mSelfID != 0 && BaseActivity.getDb() != null) {
-//			try {
-//
-//				List<ChatMessage> tis = BaseActivity.getDb().findAll(
-//						Selector.from(ChatMessage.class));
-//
-//				if (tis != null && tis.size() > 0) {
-//					int nRefreshCount = 0;
-//					for (int i = 0; i < tis.size(); ++i) {
-//						ChatMessage msg = tis.get(i);
-//						if (msg.getMsgState() == 0) {
-//							msg.setMsgState(2);
-//							BaseActivity.getDb().update(msg);
-//							nRefreshCount++;
-//						}
-//					}
-//
-//					if (nRefreshCount > 0) {
-//						refreshMessageList();
-//					}
-//				}
-//			} catch (DbException e) {
-//				e.printStackTrace();
-//			}
-//		}
+
     }
 
     private void refreshMessageList() {
@@ -631,31 +492,7 @@ public class ChattingActivity extends BaseActivity implements XListView.IXListVi
         chatingAdapter = new ChattingAdapter(this, mCurrentMessage);
         chatting_lv.setAdapter(chatingAdapter);
         chatting_lv.setSelection(chatingAdapter.getCount() - 1);
-        //chatting_lv.notifyD
-//
-//		msgListSize = tidyPendingMsgList.size();
-//		for (int i = 0; i < msgListSize; i++) {
-//			msgItem = tidyPendingMsgList.get(i);
-//			String idd = msgItem.getmMsgText();
-//			if (msgItem.getMsgType() == ChatMessage.CONTENT_TYPE_IMAGE_CONFIRM ||
-//					msgItem.getMsgType() == ChatMessage.CONTENT_TYPE_MOBILE_IMAGE) {
-//
-//				//非自己发送的图
-//				if (msgItem.getSenderID() != mSelfID) {
-//					String a = idd.substring(2, idd.length() - 2);
-//					String[] sss = a.split("\\,");
-//					String name = sss[0];
-//					name = name.replaceAll("\"", "");
-//					String img = FILE_BASE_DIR + name;
-//
-//					File file = new File(img);
-//
-//					if (!file.exists()) {
-//						loadfile(msgItem);
-//					}
-//				}
-//			}
-//		}
+
     }
 
     private void updateUnreadChatMsgCount() {
@@ -679,118 +516,7 @@ public class ChattingActivity extends BaseActivity implements XListView.IXListVi
 
             //TODO： 消息越多越慢，改从内存中取消息
             refreshList();
-
-
-//			ChatSession chatSession = AppData.updateChatSessionByFriendID(senderID);
-//			chatSession.setmNickName(mFriendNickName);
-//			//显示最后一条消息
-//			chatSession.setmLastMsgText(messageTextEntity.getmContent().get(messageTextEntity.getmContent().size() - 1).getMsgText());
-//			chatSession.setmFriendID(mFriendID);
-//			chatSession.setmSelfID(mSelfID);
-//			//在聊天窗口显示消息，当前session的可读消息为0
-//			chatSession.setNotRead(0);
-//
-//			//TODO: 万一找不到就挂了
-//            String senderNickName = UserSession.getInstance().getUserInfoById(senderID).get_nickname();
-//            String targetNickName = UserSession.getInstance().getUserInfoById(senderID).get_nickname();
-//
-//            String msgID = UUID.randomUUID().toString();
-//            int msgType = messageTextEntity.getmMsgType();
-//            String chatMsg = "";
-//            List<ContentText> contentText = messageTextEntity.getmContent();
-//            for (int i = 0; i < contentText.size(); ++i){
-//                if (msgType == ChatMessage.CONTENT_TYPE_TEXT)
-//                    chatMsg += contentText.get(i).getMsgText();
-//            }
-//
-//            BaseActivity.getChatMsgDb().insertChatMsg(msgID, ChatMessage.CONTENT_TYPE_TEXT,
-//                    senderID, senderNickName, targetID,
-//                    targetNickName, chatMsg, 0, "");
-
-
         }
-        // else if (msg.what == MegAsnType.Topicturemsg) {
-        //FileLoadInfo fileLoad = (FileLoadInfo) msg.obj;
-        //String name = fileLoad.getStrName().toStringUtf8();
-        // String path = FILE_BASE_DIR + name;
-        // File file = new File(path);
-
-        //int uError = 0;
-        //int uOffset = fileLoad.getUOffset();
-        //int uDownsize = fileLoad.getUDownsize();
-        //PictureUtil.topictrue(name, uError, uOffset, uDownsize);
-
-        //} else if (msg.what == MegAsnType.FileLoadData) {
-        //   refreshMessageList();
-        //} else if (msg.what == MegAsnType.FileUpData) {
-        // 上传图片成功
-        //FileUpInfo fileUpInfo = (FileUpInfo) msg.obj;
-        //String name = fileUpInfo.getStrName().toStringUtf8();
-        //int uFilesize = fileUpInfo.getUFilesize();
-
-//            // 更新消息状态
-//            updateUnreadRecvMsgToReadState();
-//
-//            int TargetID = mFriendID;
-//            SendMessage sendMessage = new SendMessage();
-//            //sendMessage.setmClientType(3);
-//            //sendMessage.setFrom(mSenderID);
-//            //sendMessage.setTo(TargetID);
-//            //sendMessage.setmMsgID(uMsgID);
-//            //sendMessage.setmMsgType(5);
-//            long epoch = System.currentTimeMillis() / 1000;
-//            //sendMessage.setmMsgTime(epoch);
-//            List<Object> obj = new ArrayList<Object>();
-//            Map<String, Object> map = new HashMap<String, Object>();
-//
-//            int nWidth = 0;
-//            int nHeight = 0;
-//            //File file = new File("/flamingo/" + name);
-//            if (file.exists()) {
-//                BitmapFactory.Options opts = new BitmapFactory.Options();
-//                opts.inPreferredConfig = Bitmap.Config.RGB_565;
-//                opts.inJustDecodeBounds = true;
-//                //BitmapFactory.decodeFile(FILE_BASE_DIR + name, opts);
-//                nWidth = opts.outWidth;
-//                nHeight = opts.outHeight;
-//            }
-
-        //Object[] strArray = {name, fileUpInfo.getStrUrl(), uFilesize, nWidth, nHeight};
-        //map.put("pic", strArray);
-        //obj.add(map);
-        //sendMessage.setContent(obj);
-        //talkmsg = JSON.toJSONString(sendMessage);
-        //  /    // con.sendmsg(mSenderID, TargetID, uMsgID, talkmsg);
-        //       int uMsgID = -1;
-        //con.sendChatMsg(mSenderID, TargetID, uMsgID, talkmsg);
-//			chatSession.setStrNickName(mFriendNickName);
-//			chatSession.setTextid(talkmsg);
-        //        int nTargetID = mFriendID;
-//			chatSession.setmFriendID(nTargetID);
-//			chatSession.setmSelfID(mSenderID);
-//			try {
-////				infos = BaseActivity.getDb().findAll(
-////						Selector.from(ChatSession.class).where(
-////								"mSelfID", "=",
-////								application.getMemberEntity().getuAccountID()));
-////				if (infos != null) {
-////					for (int i = 0; i < infos.size(); i++) {
-////						if (infos.get(i).getmFriendID() == nTargetID) {
-////							db.delete(infos.get(i));
-////							break;
-////						}
-////					}
-////				}
-//				//BaseActivity.getDb().save(chatSession);
-//				//AppData.updateChatSessionByFriendID(chatSession);
-//			} catch (DbException e) {
-//				e.printStackTrace();
-//			}
-//        } else if (msg.what == MegAsnType.Refresh) {
-//            refreshMessageList();
-//        }
-        //  }
-
     }
 
     /*
@@ -910,8 +636,8 @@ public class ChattingActivity extends BaseActivity implements XListView.IXListVi
             if (ff.length() <= file.length()) {
                 file.delete();
                 try {
-                    java.io.FileInputStream fosfrom = new java.io.FileInputStream(ff);
-                    java.io.FileOutputStream fosto = new FileOutputStream(file);
+                    FileInputStream fosfrom = new FileInputStream(ff);
+                    FileOutputStream fosto = new FileOutputStream(file);
                     try {
                         byte[] bt = new byte[1024 * 100];
                         int c;
@@ -968,7 +694,7 @@ public class ChattingActivity extends BaseActivity implements XListView.IXListVi
 
         String strChecksum = Md5Util.getMD5(file);
         if (StringUtil.isEmpty(strChecksum)) {
-            Toast.makeText(this, R.string.parse_img_error, Toast.LENGTH_SHORT).show();
+///            Toast.makeText(this, R.string.parse_img_error, Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -1069,51 +795,6 @@ public class ChattingActivity extends BaseActivity implements XListView.IXListVi
     // 相册或相机发送图片
     public void sendPicture(String newFileName, String strChecksum) {
         NetWorker.uploadFile(newFileName, strChecksum, mFriendID);
-
-//		int TargetID = mFriendID;
-//		SendMessage sendMessage = new SendMessage();
-//		sendMessage.set_clientType(3);
-//		sendMessage.setFrom(mSenderID);
-//		sendMessage.setTo(TargetID);
-//		sendMessage.setmMsgID(uMsgID);
-//		sendMessage.setmMsgType(5);
-//		long epoch = System.currentTimeMillis() / 1000;
-//		sendMessage.setmMsgTime(epoch);
-//		List<Object> obj = new ArrayList<Object>();
-//		Map<String, Object> map = new HashMap<String, Object>();
-//
-//		Object[] strArray = { newFileName, strChecksum, uFilesize, 0, 0 };
-//		map.put("pic", strArray);
-//		obj.add(map);
-//		sendMessage.setmContent(obj);
-//		String talkmsgaa = JSON.toJSONString(sendMessage);
-//		try {
-//			ChatMessage messages = new ChatMessage();
-//			messages.setSenderID(mSenderID);// haoyou
-//			messages.setmMsgID("");
-//			messages.setSenderID(mSenderID);
-//			messages.setmMsgType(5);
-//			messages.setTargetID(mFriendID);
-//			messages.setMsgSenderClientType(3);
-//			messages.setMsgTime(epoch);
-//			List<ContentText> cons = new ArrayList<ContentText>();
-//			ContentText ct = new ContentText();
-//			String talkmsges = talkmsgaa.substring(
-//					talkmsgaa.indexOf("[{\"pic\":["), talkmsgaa.indexOf("]}]"));
-//			talkmsges = talkmsges.replace("[{\"pic\":[", "[");
-//			String talkmsger = talkmsges + "]";
-//			ct.setPic(talkmsger);
-//			cons.add(ct);
-//			messages.setmContent(cons);
-//			//BaseActivity.getDb().save(messages);
-//
-//			loadSendingMsg();
-//
-//		} catch (DbException e) {
-//			e.printStackTrace();
-//		}
-        //refreshMessageList();
-
     }
 
     public static byte[] getBytesFromFile(File f) {

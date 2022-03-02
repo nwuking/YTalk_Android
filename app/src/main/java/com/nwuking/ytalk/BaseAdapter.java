@@ -22,7 +22,7 @@ public abstract class BaseAdapter<T> extends android.widget.BaseAdapter {
     private View view;
     private LayoutInflater layoutInflater;
 
-    protected MyApplication _flamingoApplication;
+    protected MyApplication _myApplication;
 
     protected Context context;
 
@@ -43,7 +43,7 @@ public abstract class BaseAdapter<T> extends android.widget.BaseAdapter {
 
         imageLoader = ImageLoader.getInstance();
         builder = new DisplayImageOptions.Builder();
-        options = builder.showImageOnLoading(R.drawable.touming) // 设置图片在下载期间显示的图片
+/*        options = builder.showImageOnLoading(R.drawable.touming) // 设置图片在下载期间显示的图片
                 .showImageForEmptyUri(R.drawable.touming)// 设置图片Uri为空或是错误的时候显示的图片
                 .showImageOnFail(R.drawable.touming) // 设置图片加载/解码过程中错误时候显示的图片
                 .cacheInMemory(true)// 设置下载的图片是否缓存在内存中
@@ -54,8 +54,8 @@ public abstract class BaseAdapter<T> extends android.widget.BaseAdapter {
                 // .displayer(new RoundedBitmapDisplayer(0))// 是否设置为圆角，弧度为多少
                 // .displayer(new FadeInBitmapDisplayer(0))// 是否图片加载好后渐入的动画时间
                 .build();// 构建完成
-
-        _flamingoApplication = (MyApplication) context.getApplicationContext();
+*/
+        _myApplication = (MyApplication) context.getApplicationContext();
 
     }
 
@@ -90,7 +90,7 @@ public abstract class BaseAdapter<T> extends android.widget.BaseAdapter {
     /**
      * 添加单条
      *
-     * @param T
+     * @param t
      */
     public void add(T t) {
         if (t != null) {
@@ -164,7 +164,7 @@ public abstract class BaseAdapter<T> extends android.widget.BaseAdapter {
         ImageView iv = get(view, id);
 
         ViewGroup.LayoutParams params = iv.getLayoutParams();
-        params.width = (int) (screenWidthScale * _flamingoApplication.getScreenWidth());
+        params.width = (int) (screenWidthScale * _myApplication.getScreenWidth());
         params.height = (int) (params.width * heightWidthScale);
         iv.setLayoutParams(params);
 
@@ -207,7 +207,7 @@ public abstract class BaseAdapter<T> extends android.widget.BaseAdapter {
      *
      * @param id
      *            控件ID
-     * @param str
+     * @param signature
      *            要设置的文字
      */
     protected void setText2(int id, int onlineType, String signature) {

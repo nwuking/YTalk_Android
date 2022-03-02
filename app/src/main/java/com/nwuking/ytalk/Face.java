@@ -58,7 +58,6 @@ public class Face {
             return R.drawable.face5;
         else if (id == 6)
             return R.drawable.face6;
-        R.drawable.
 
         return R.drawable.face0;
     }
