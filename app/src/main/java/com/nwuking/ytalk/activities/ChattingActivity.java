@@ -135,7 +135,7 @@ public class ChattingActivity extends BaseActivity implements XListView.IXListVi
     public void onClick(View v) {
         ClipboardManager cmb = (ClipboardManager) this.getSystemService(Context.CLIPBOARD_SERVICE);
         cmb.getText();
-
+/*
         switch (v.getId()) {
             case R.id.btn_back:
                 navigateToMainActivity();
@@ -171,16 +171,19 @@ public class ChattingActivity extends BaseActivity implements XListView.IXListVi
             default:
                 break;
         }
+
+ */
     }
 
     @Override
     protected int getContentView() {
-        return R.layout.activity_chatting;
+//        return R.layout.activity_chatting;
+        return 0;
     }
 
     @Override
     protected void initData() {
-       tvWindowTitle = (TextView) findViewById(R.id.tv_window_title);
+/*       tvWindowTitle = (TextView) findViewById(R.id.tv_window_title);
 
         int selfID = UserSession.getInstance().loginUser.get_userid();
 
@@ -307,7 +310,9 @@ public class ChattingActivity extends BaseActivity implements XListView.IXListVi
             refreshList();
         }
 
+ */
     }
+
 
 
 
@@ -564,7 +569,7 @@ public class ChattingActivity extends BaseActivity implements XListView.IXListVi
         Log.d(LOG_TAG, filePath);
         String md5 = Md5Util.getMD5(new File(filePath));
         if (StringUtil.isEmpty(md5)) {
-            Toast.makeText(this, R.string.parse_img_error, Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, R.string.parse_img_error, Toast.LENGTH_SHORT).show();
             return;
         }
 

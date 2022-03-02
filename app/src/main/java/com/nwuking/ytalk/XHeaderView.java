@@ -46,7 +46,7 @@ public class XHeaderView extends LinearLayout {
     }
 
     private void initView(Context context) {
-        // Initial set header view height 0
+/*        // Initial set header view height 0
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 LayoutParams.MATCH_PARENT, 0);
         mContainer = (LinearLayout) LayoutInflater.from(context).inflate(
@@ -69,6 +69,8 @@ public class XHeaderView extends LinearLayout {
                 0.5f);
         mRotateDownAnim.setDuration(ROTATE_ANIM_DURATION);
         mRotateDownAnim.setFillAfter(true);
+
+ */
     }
 
     public void setState(int state) {
@@ -128,7 +130,7 @@ public class XHeaderView extends LinearLayout {
     public void setVisibleHeight(int height) {
         if (height < 0)
             height = 0;
-        LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) mContainer
+        LayoutParams lp = (LayoutParams) mContainer
                 .getLayoutParams();
         lp.height = height;
         mContainer.setLayoutParams(lp);

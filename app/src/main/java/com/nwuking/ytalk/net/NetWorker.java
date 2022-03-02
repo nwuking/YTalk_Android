@@ -1392,7 +1392,7 @@ public class NetWorker {
             ((MyApplication) context).setTabIndex(TabbarEnum.MESSAGE);
         }
 
-        if (updateNewMsgCountAndMakeNotifications) {
+ /*       if (updateNewMsgCountAndMakeNotifications) {
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             Notification notification = new NotificationCompat.Builder(context)
                     .setContentTitle(notificationTitle)
@@ -1407,6 +1407,8 @@ public class NetWorker {
                     .build();
             manager.notify(MyApplication.CHATMSG_NOTIFICATION_ID, notification);
         }
+
+  */
 
         BaseActivity.sendMessage(msg);
     }
@@ -1499,12 +1501,14 @@ public class NetWorker {
                 if (contactsDao != null) {
                     contactsDao.insertOrReplace(dealUser);
                 }
-                NotificationUtil.showNotification(MyApplication.getInstance(),
+ /*               NotificationUtil.showNotification(MyApplication.getInstance(),
                         friendID,
                         friendUsername,
                         friendUsername + "申请添加您为好友",
                         R.drawable.ic_launcher,
                         NewFriendActivity.class);
+
+  */
             }
 
             // A收到B的同意信息，存入数据库。
@@ -1520,12 +1524,14 @@ public class NetWorker {
                 String notificationText = "您和" + friendUsername + "已经成为好友";
                 if (UserInfo.isGroup(friendID))
                     notificationText = "您已经成功加入群[" + friendUsername + "]";
-                NotificationUtil.showNotification(MyApplication.getInstance(),
+        /*        NotificationUtil.showNotification(MyApplication.getInstance(),
                         friendID,
                         friendUsername,
                         notificationText,
                         R.drawable.ic_launcher,
                         NewFriendActivity.class);
+
+         */
             }
 
             //发送到 新的朋友页面

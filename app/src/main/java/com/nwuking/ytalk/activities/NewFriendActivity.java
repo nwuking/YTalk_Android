@@ -39,7 +39,7 @@ public class NewFriendActivity extends BaseActivity {
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
+/*        switch (v.getId()) {
             case R.id.btn_back:
                 //con.getFriends(1);
                 this.setResult(0);
@@ -55,6 +55,8 @@ public class NewFriendActivity extends BaseActivity {
             default:
                 break;
         }
+
+ */
     }
 
     @Override
@@ -74,13 +76,14 @@ public class NewFriendActivity extends BaseActivity {
 
     @Override
     protected int getContentView() {
-        return R.layout.activity_newfriend;
+  ///      return R.layout.activity_newfriend;
+        return 0;
     }
 
     @Override
     protected void initData() {
         addsend.setOnClickListener(this);
-        mRecyclerView = (RecyclerView) findViewById(R.id.recycler);
+/*        mRecyclerView = (RecyclerView) findViewById(R.id.recycler);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new AddedUserAdapter();
         mRecyclerView.setAdapter(mAdapter);
@@ -91,6 +94,7 @@ public class NewFriendActivity extends BaseActivity {
             mAdapter.notifyDataSetChanged();
         }
 
+ */
     }
 
     @Override
@@ -143,19 +147,20 @@ public class NewFriendActivity extends BaseActivity {
 
         private LayoutInflater mLayoutInflater;
 
-        @Override
-        public AddedUserAdapter.AddedUserViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+       @Override
+        public AddedUserViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             if (mLayoutInflater == null) {
                 mLayoutInflater = LayoutInflater.from(parent.getContext());
             }
 
-            View view = mLayoutInflater.inflate(R.layout.item_search_user, parent, false);
-
+  ///        View view = mLayoutInflater.inflate(R.layout.item_search_user, parent, false);
+           View view = mLayoutInflater.inflate(R.layout.activity_main, parent, false);
             return new AddedUserViewHolder(view);
         }
 
+
         @Override
-        public void onBindViewHolder(AddedUserAdapter.AddedUserViewHolder holder, int position) {
+        public void onBindViewHolder(AddedUserViewHolder holder, int position) {
             holder.bindDataToView(mUsers.get(position));
         }
 
@@ -177,19 +182,21 @@ public class NewFriendActivity extends BaseActivity {
 
             public AddedUserViewHolder(View itemView) {
                 super(itemView);
-
+/*
                 mImgHead = (ImageView) itemView.findViewById(R.id.img_head);
                 mTxtName = (TextView) itemView.findViewById(R.id.tv_window_title);
                 mTxtInfo = (TextView) itemView.findViewById(R.id.tv_nickname);
                 mBtnAgree = (Button) itemView.findViewById(R.id.btn_add);
                 mBtnAgree.setText("同意");
+
+ */
             }
 
 
             public void bindDataToView(final Contacts result) {
                 if (result.getType() == OperateFriendEnum.OPERATE_FRIEND_RECV_APPLY) {//B收到A的好友申请
                     mBtnAgree.setText("同意");
-                    mBtnAgree.setTextColor(itemView.getResources().getColor(R.color.green));
+  ///                  mBtnAgree.setTextColor(itemView.getResources().getColor(R.color.green));
                     mBtnAgree.setEnabled(true);
                 } else if (result.getType() == OperateFriendEnum.OPERATE_FRIEND_RESPONSE_APPLY) {//A收到B的同意信息
                     if (UserInfo.isGroup(result.getUserid()))
@@ -197,7 +204,7 @@ public class NewFriendActivity extends BaseActivity {
                     else
                         mBtnAgree.setText("已同意");
 
-                    mBtnAgree.setTextColor(itemView.getResources().getColor(R.color.gray));
+    ///                mBtnAgree.setTextColor(itemView.getResources().getColor(R.color.gray));
                     mBtnAgree.setEnabled(false);
                 }
 
@@ -212,7 +219,7 @@ public class NewFriendActivity extends BaseActivity {
                         else
                             mBtnAgree.setText("已同意");
 
-                        mBtnAgree.setTextColor(itemView.getResources().getColor(R.color.gray));
+     ///                   mBtnAgree.setTextColor(itemView.getResources().getColor(R.color.gray));
                         mBtnAgree.setEnabled(false);
                         //TODO: 最好是做个应答再刷新好友列表
                         NetWorker.getFriendList();

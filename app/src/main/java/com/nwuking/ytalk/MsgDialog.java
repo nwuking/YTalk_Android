@@ -35,21 +35,23 @@ public class MsgDialog extends Dialog {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        this.setContentView(R.layout.dialog);
+///        this.setContentView(R.layout.dialog);
         setCanceledOnTouchOutside(true);
         intview();
         intlistner();
     }
 
     private void intview() {
-        copy = (TextView) findViewById(R.id.copy);
+/*        copy = (TextView) findViewById(R.id.copy);
         delete = (TextView) findViewById(R.id.delete);
         forward = (TextView) findViewById(R.id.forward);
         save = (TextView) findViewById(R.id.save);
+
+ */
     }
     private void intlistner() {
         // 复制
-        copy.setOnClickListener(new android.view.View.OnClickListener() {
+        copy.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("NewApi")
             @Override
             public void onClick(View v) {
@@ -62,7 +64,7 @@ public class MsgDialog extends Dialog {
         });
 
         // 删除
-        delete.setOnClickListener(new android.view.View.OnClickListener() {
+        delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 MsgDialog.this.cancel();
@@ -82,7 +84,7 @@ public class MsgDialog extends Dialog {
             }
         });
         // 转发
-        forward.setOnClickListener(new android.view.View.OnClickListener() {
+        forward.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 MsgDialog.this.cancel();
@@ -94,7 +96,7 @@ public class MsgDialog extends Dialog {
             }
         });
         // 收藏
-        save.setOnClickListener(new android.view.View.OnClickListener() {
+        save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 MsgDialog.this.cancel();

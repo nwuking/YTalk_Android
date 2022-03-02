@@ -60,7 +60,7 @@ public class ForwardActivity extends BaseActivity {
         @Override
         public void dispatchMessage(Message msg) {
             super.dispatchMessage(msg);
-            switch (msg.what) {
+ /*           switch (msg.what) {
                 case 0:
                     // 选择群发用户uTargetID
                     UserId = msg.arg1;
@@ -97,12 +97,14 @@ public class ForwardActivity extends BaseActivity {
                 default:
                     break;
             }
+
+  */
         }
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
+ /*       switch (v.getId()) {
             case R.id.btn_back:
 
                 finish();
@@ -143,11 +145,14 @@ public class ForwardActivity extends BaseActivity {
             default:
                 break;
         }
+
+  */
     }
 
     @Override
     protected int getContentView() {
-        return R.layout.activity_forword;
+//        return R.layout.activity_forword;
+        return 0;
     }
 
     @Override
@@ -169,7 +174,7 @@ public class ForwardActivity extends BaseActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                strNickName = friendsAdapter.getList().get(position).get_nickname();
+/*                strNickName = friendsAdapter.getList().get(position).get_nickname();
                 uTargetID = friendsAdapter.getList().get(position).get_userid();
                 final Dialog mDialog = new Dialog(ForwardActivity.this,
                         R.style.CustomDialogTheme);
@@ -219,6 +224,7 @@ public class ForwardActivity extends BaseActivity {
                     }
                 });
 
+ */
             }
         });
     }

@@ -41,7 +41,7 @@ public class XFooterView extends LinearLayout {
     }
 
     private void initView(Context context) {
-        mLayout = LayoutInflater.from(context)
+/*        mLayout = LayoutInflater.from(context)
                 .inflate(R.layout.vw_footer, null);
         mLayout.setLayoutParams(new LinearLayout.LayoutParams(
                 LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
@@ -62,6 +62,8 @@ public class XFooterView extends LinearLayout {
                 0.5f);
         mRotateDownAnim.setDuration(ROTATE_ANIM_DURATION);
         mRotateDownAnim.setFillAfter(true);
+
+ */
     }
 
     /**
@@ -122,7 +124,7 @@ public class XFooterView extends LinearLayout {
     public void setBottomMargin(int margin) {
         if (margin < 0)
             return;
-        LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) mLayout
+        LayoutParams lp = (LayoutParams) mLayout
                 .getLayoutParams();
         lp.bottomMargin = margin;
         mLayout.setLayoutParams(lp);
@@ -134,7 +136,7 @@ public class XFooterView extends LinearLayout {
      * @return
      */
     public int getBottomMargin() {
-        LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) mLayout
+        LayoutParams lp = (LayoutParams) mLayout
                 .getLayoutParams();
         return lp.bottomMargin;
     }
@@ -159,7 +161,7 @@ public class XFooterView extends LinearLayout {
      * hide footer when disable pull load more
      */
     public void hide() {
-        LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) mLayout
+        LayoutParams lp = (LayoutParams) mLayout
                 .getLayoutParams();
         lp.height = 0;
         mLayout.setLayoutParams(lp);
@@ -169,7 +171,7 @@ public class XFooterView extends LinearLayout {
      * show footer
      */
     public void show() {
-        LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) mLayout
+        LayoutParams lp = (LayoutParams) mLayout
                 .getLayoutParams();
         lp.height = LayoutParams.WRAP_CONTENT;
         mLayout.setLayoutParams(lp);

@@ -266,7 +266,7 @@ public class FaceConversionUtil {
         }
         if (list.size() == pageSize) {
             ChatEmoji object = new ChatEmoji();
-            object.setId(R.drawable.face_del_icon);
+ ///           object.setId(R.drawable.face_del_icon);
             list.add(object);
         }
         return list;

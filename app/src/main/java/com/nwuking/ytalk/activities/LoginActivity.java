@@ -124,12 +124,13 @@ public class LoginActivity extends BaseActivity {
 
     @Override
     protected int getContentView() {
-        return R.layout.activity_login;
+///        return R.layout.activity_login;
+        return 0;
     }
 
     @Override
     protected void initData() {
-        mTvServerSet = (TextView) findViewById(R.id.tv_server);
+/*        mTvServerSet = (TextView) findViewById(R.id.tv_server);
         mEdtUsername = (EditText) findViewById(R.id._etUsername);
         mEdtPassword = (EditText) findViewById(R.id._etPassword);
         mBtnLogin = (Button) findViewById(R.id.btn_login);
@@ -137,6 +138,8 @@ public class LoginActivity extends BaseActivity {
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
         mTvProgressText = (TextView) findViewById(R.id.tvProgressText);
         mProgressBar.setVisibility(View.INVISIBLE);
+
+ */
     }
 
     @Override
@@ -151,7 +154,7 @@ public class LoginActivity extends BaseActivity {
         mUsername = mEdtUsername.getText().toString().trim();
         mPassword = mEdtPassword.getText().toString().trim();
 
-        switch (v.getId()) {
+ /*       switch (v.getId()) {
             case R.id.btn_back:
                 finish();
                 break;
@@ -182,32 +185,7 @@ public class LoginActivity extends BaseActivity {
                 mProgressBar.setVisibility(View.VISIBLE);
                 mLogining = true;
                 NetWorker.login(mUsername, mPassword, ClientType.CLIENT_TYPE_ANDROID, OnlineType.online_type_android_cellular);
-                /*
-                    TODO: 解决这个问题
-                    E/StrictMode: A resource was acquired at attached stack trace but never released. See java.io.Closeable for information on avoiding resource leaks.
-              java.lang.Throwable: Explicit termination method 'close' not called
-                  at dalvik.system.CloseGuard.open(CloseGuard.java:180)
-                  at android.database.sqlite.SQLiteDatabase.openInner(SQLiteDatabase.java:809)
-                  at android.database.sqlite.SQLiteDatabase.open(SQLiteDatabase.java:793)
-                  at android.database.sqlite.SQLiteDatabase.openDatabase(SQLiteDatabase.java:696)
-                  at android.app.ContextImpl.openOrCreateDatabase(ContextImpl.java:689)
-                  at android.content.ContextWrapper.openOrCreateDatabase(ContextWrapper.java:299)
-                  at android.database.sqlite.SQLiteOpenHelper.getDatabaseLocked(SQLiteOpenHelper.java:223)
-                  at android.database.sqlite.SQLiteOpenHelper.getWritableDatabase(SQLiteOpenHelper.java:163)
-                  at org.hootina.platform.db.MyDbUtil.initDatabase(MyDbUtil.java:16)
-                  at org.hootina.platform.activities.LoginActivity.onClick(LoginActivity.java:189)
-                  at java.lang.reflect.Method.invoke(Native Method)
-                  at android.view.View$DeclaredOnClickListener.onClick(View.java:4730)
-                  at android.view.View.performClick(View.java:5647)
-                  at android.view.View$PerformClick.run(View.java:22465)
-                  at android.os.Handler.handleCallback(Handler.java:754)
-                  at android.os.Handler.dispatchMessage(Handler.java:95)
-                  at android.os.Looper.loop(Looper.java:163)
-                  at android.app.ActivityThread.main(ActivityThread.java:6389)
-                  at java.lang.reflect.Method.invoke(Native Method)
-                  at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:901)
-                  at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:791)
-                 */
+
                 if (!dbInitialized) {
                     MyDbUtil.initDatabase(this, mUsername);
                     dbInitialized = true;
@@ -230,10 +208,13 @@ public class LoginActivity extends BaseActivity {
             default:
                 break;
         }
+
+  */
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case BaseActivity.REGISTER_RESULT:
                 if (resultCode == BaseActivity.REGISTER_RESULT_OK) {
@@ -340,7 +321,7 @@ public class LoginActivity extends BaseActivity {
             enableUI(true);
             mTvProgressText.setText("");
             //提示用户取消登陆
-            Toast.makeText(this, R.string.login_activity_usercancelinglogining, Toast.LENGTH_LONG).show();
+///            Toast.makeText(this, R.string.login_activity_usercancelinglogining, Toast.LENGTH_LONG).show();
             return;
         }
 

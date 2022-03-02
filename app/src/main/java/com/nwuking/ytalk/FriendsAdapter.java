@@ -21,12 +21,13 @@ public class FriendsAdapter extends BaseAdapter<UserInfo> {
 
     @Override
     public int getContentView() {
-        return R.layout.friend_item;
+///        return R.layout.friend_item;
+        return 0;
     }
 
     @Override
     public void onInitView(View view, int position) {
-        UserInfo friendInfo = getList().get(position);
+ /*       UserInfo friendInfo = getList().get(position);
         setText(R.id.tv_window_title, friendInfo.get_nickname());
         setText2(R.id.txt_sign, friendInfo.get_onlinetype(), friendInfo.get_signature());
 
@@ -64,30 +65,10 @@ public class FriendsAdapter extends BaseAdapter<UserInfo> {
                 int position = (Integer) v.getTag();
                 int uTargetID = getList().get(position).get_userid();
                 String StrNickName=	getList().get(position).get_nickname();
-//				getList().get(position).setSelected(!getList().get(position).isSelected());
-//				Message msg = Message.obtain();
-//				if (getList().get(position).isSelected()) {
-//					iv_product_selected
-//							.setBackgroundResource(R.drawable.rbtn_payway_checked_sc);
-//					// 添加
-//
-//					msg.arg1 = uTargetID;
-//					msg.obj=StrNickName;
-//					msg.what = 0;
-//					handler.sendMessage(msg);
-//				} else {
-//					// 取消
-//					iv_product_selected
-//							.setBackgroundResource(R.drawable.rbtn_payway_unchecked_sc);
-//					msg.arg1 = uTargetID;
-//					msg.obj=StrNickName;
-//					msg.what = 1;
-//					handler.sendMessage(msg);
-//
-//				}
-
             }
         });
+
+  */
 
     }
 

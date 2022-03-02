@@ -89,7 +89,7 @@ public class XListView extends ListView implements AbsListView.OnScrollListener 
     }
 
     private void initWithContext(Context context) {
-        mScroller = new Scroller(context, new DecelerateInterpolator());
+/*        mScroller = new Scroller(context, new DecelerateInterpolator());
         super.setOnScrollListener(this);
 
         // init header view
@@ -130,6 +130,8 @@ public class XListView extends ListView implements AbsListView.OnScrollListener 
                 }
             });
         }
+
+ */
     }
 
     @Override
