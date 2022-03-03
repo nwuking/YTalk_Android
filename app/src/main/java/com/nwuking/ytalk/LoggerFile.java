@@ -1,6 +1,7 @@
 package com.nwuking.ytalk;
 
 import android.os.Environment;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -8,6 +9,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.logging.Logger;
 
 /**
  * 往sd卡写入日志文件
@@ -20,6 +22,7 @@ public final class LoggerFile {
     private final static int LOG_ERROR = 2;
     private static File mFile;
     private static FileOutputStream mOutputStream;
+    private static boolean t_oFile = true;
 
     /**
      * @param toFile 为true写入文件，为false写入控制台
@@ -27,6 +30,10 @@ public final class LoggerFile {
      */
     public static boolean Init(boolean toFile)
     {
+        if(!toFile) {
+            t_oFile = toFile;
+            return true;
+        }
         Date curDate = new Date(System.currentTimeMillis());
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmssSSS");
         String timestr = formatter.format(curDate);
@@ -81,8 +88,8 @@ public final class LoggerFile {
 
     private static boolean Log(int level, String... str)
     {
-        if (mOutputStream == null || str.length == 0)
-            return false;
+ //       if (mOutputStream == null || str.length == 0)
+  //          return false;
 
         String levelStr;
         if (level == LOG_INFO)
@@ -122,6 +129,10 @@ public final class LoggerFile {
             return false;
 
         try {
+            if(!t_oFile) {
+                Log.i(levelStr, bt.toString());
+                return true;
+            }
             mOutputStream.write(bt, 0, bt.length);
             mOutputStream.flush();
         } catch (IOException e) {

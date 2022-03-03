@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentActivity;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -26,7 +27,7 @@ import java.lang.reflect.Field;
 /**
  * 所有activity类的父类
  */
-public abstract class BaseActivity extends AppCompatActivity implements View.OnClickListener {
+public abstract class BaseActivity extends FragmentActivity implements View.OnClickListener {
     //注册Activity返回的结果
     public static final int REGISTER_RESULT		   = 0;
     public static final int REGISTER_RESULT_CANCEL = 1;
@@ -40,7 +41,6 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
     @Override
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
-
         // 设置隐藏标题栏
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 

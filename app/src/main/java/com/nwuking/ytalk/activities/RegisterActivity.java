@@ -21,18 +21,12 @@ public class RegisterActivity extends BaseActivity {
 
     @Override
     protected int getContentView() {
-        return 0;
-        //return R.layout.activity_register;
+        //return 0;
+        return R.layout.activity_register;
     }
 
     @Override
     protected void initData() {
-//		// 获取数据库操作对象
-//		try {
-//			userlist = BaseActivity.getDb().findAll(UserInfo.class);
-//		} catch (DbException e) {
-//			e.printStackTrace();
-//		}
     }
 
     @Override
@@ -47,7 +41,7 @@ public class RegisterActivity extends BaseActivity {
         szPasswd = et_password.getText().toString().trim();
         surePasswd = et_surepwd.getText().toString().trim();
         switch (v.getId()) {
-/*            case R.id.btn_back:
+            case R.id.btn_back:
                 setResult(BaseActivity.REGISTER_RESULT_CANCEL);
                 finish();
                 break;
@@ -83,7 +77,7 @@ public class RegisterActivity extends BaseActivity {
                 btnRegister.setEnabled(false);
                 NetWorker.registerUser(szAccountNo, szPasswd, szNickName);
                 break;
-*/
+
             default:
                 break;
         }
@@ -109,10 +103,10 @@ public class RegisterActivity extends BaseActivity {
                 Toast.makeText(this, "注册失败", Toast.LENGTH_SHORT).show();
             }
 
-/*            Button btnRegister = (Button)findViewById(R.id.makesure_register);
+            Button btnRegister = (Button)findViewById(R.id.makesure_register);
             btnRegister.setEnabled(true);
 
- */
+
         }
 
     } //end processMessage

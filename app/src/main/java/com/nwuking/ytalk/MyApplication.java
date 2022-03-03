@@ -2,6 +2,7 @@ package com.nwuking.ytalk;
 
 import android.app.Application;
 import android.content.Context;
+import android.widget.Toast;
 
 import com.lidroid.xutils.DbUtils;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
@@ -54,7 +55,6 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-
         instance = this;
 
         mContext = getApplicationContext();
@@ -88,7 +88,7 @@ public class MyApplication extends Application {
             logsDir.mkdir();
         }
 
-        LoggerFile.Init(true);
+        LoggerFile.Init(false);
         LoggerFile.LogInfo("MyApplication initialization completed");
 
         // 创建 bitmapUtils

@@ -7,6 +7,7 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -33,7 +34,7 @@ public class SplashActivity  extends BaseActivity{
 
         jump();
 
-        // 渐变动画
+       // 渐变动画
         AlphaAnimation alphaAnimation = new AlphaAnimation(0.0f, 1.0f);
 
         alphaAnimation.setAnimationListener(new Animation.AnimationListener() {
@@ -57,6 +58,7 @@ public class SplashActivity  extends BaseActivity{
         });
         alphaAnimation.setDuration(3000);
         rl_splash.startAnimation(alphaAnimation);
+
     }
 
     @Override
@@ -83,7 +85,7 @@ public class SplashActivity  extends BaseActivity{
     @Override
     protected void setData() {
 
-        iv_up.setImageResource(R.drawable.splash_down);
+        //iv_up.setImageResource(R.drawable.splash_down);
 
     }
 

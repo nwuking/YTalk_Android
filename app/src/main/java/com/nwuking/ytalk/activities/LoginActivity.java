@@ -76,7 +76,6 @@ public class LoginActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle arg0) {
-        //TODO: 权宜之计，允许UI线程中进行网络通信
         StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
                 .detectDiskReads().detectDiskWrites().detectNetwork()
                 .penaltyLog().build());
@@ -90,10 +89,6 @@ public class LoginActivity extends BaseActivity {
         mEdtUsername.setText(mUsername);
         mEdtPassword.setText(mPassword);
 
-//		if (userlist != null && userlist.size() != 0) {
-//			_etUsername.setText(userlist.get(userlist.size() - 1).get_username());
-//			_etPassword.setText(userlist.get(userlist.size() - 1).get_());
-//		}
         AssetManager asset = getAssets();
         try {
             InputStream input = asset.open("faceconfig.xml");
@@ -126,7 +121,7 @@ public class LoginActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-        mTvServerSet = (TextView) findViewById(R.id.tv_server);
+        //mTvServerSet = (TextView) findViewById(R.id.tv_server);
         mEdtUsername = (EditText) findViewById(R.id._etUsername);
         mEdtPassword = (EditText) findViewById(R.id._etPassword);
         mBtnLogin = (Button) findViewById(R.id.btn_login);
@@ -142,7 +137,7 @@ public class LoginActivity extends BaseActivity {
     protected void setData() {
         //ll_iutalk.setOnClickListener(this);
         //ll_moble.setOnClickListener(this);
-        rl_server.setOnClickListener(this);
+        //rl_server.setOnClickListener(this);
     }
 
     @Override
@@ -193,7 +188,6 @@ public class LoginActivity extends BaseActivity {
 
             // 注册
             case R.id.btn_register:
-                //CrashReport.testJavaCrash();
                 Intent intent = new Intent(this, RegisterActivity.class);
                 startActivityForResult(intent, BaseActivity.REGISTER_RESULT);
                 mProgressBar.setVisibility(View.GONE);
