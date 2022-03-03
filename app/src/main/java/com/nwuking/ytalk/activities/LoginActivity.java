@@ -85,9 +85,6 @@ public class LoginActivity extends BaseActivity {
                 .penaltyLog().penaltyDeath().build());
 
         super.onCreate(arg0);
-        //TODO: 暂且注释掉，重新登录将来重新做一下
-        //con = Communication.newInstance();
-        //con.stopWork();
 
         getLoginUserInfoFromSharedPreferences();
         mEdtUsername.setText(mUsername);
@@ -124,13 +121,12 @@ public class LoginActivity extends BaseActivity {
 
     @Override
     protected int getContentView() {
-///        return R.layout.activity_login;
-        return 0;
+       return R.layout.activity_login;
     }
 
     @Override
     protected void initData() {
-/*        mTvServerSet = (TextView) findViewById(R.id.tv_server);
+        mTvServerSet = (TextView) findViewById(R.id.tv_server);
         mEdtUsername = (EditText) findViewById(R.id._etUsername);
         mEdtPassword = (EditText) findViewById(R.id._etPassword);
         mBtnLogin = (Button) findViewById(R.id.btn_login);
@@ -139,7 +135,7 @@ public class LoginActivity extends BaseActivity {
         mTvProgressText = (TextView) findViewById(R.id.tvProgressText);
         mProgressBar.setVisibility(View.INVISIBLE);
 
- */
+
     }
 
     @Override
@@ -154,10 +150,12 @@ public class LoginActivity extends BaseActivity {
         mUsername = mEdtUsername.getText().toString().trim();
         mPassword = mEdtPassword.getText().toString().trim();
 
- /*       switch (v.getId()) {
-            case R.id.btn_back:
+        switch (v.getId()) {
+            /*case R.id.btn_back:
                 finish();
                 break;
+
+             */
 
             case R.id.btn_login:
                 if (!NetUtils.isConnected(this)) {
@@ -209,7 +207,7 @@ public class LoginActivity extends BaseActivity {
                 break;
         }
 
-  */
+
     }
 
     @Override

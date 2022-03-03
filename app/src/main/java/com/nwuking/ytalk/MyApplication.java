@@ -89,7 +89,7 @@ public class MyApplication extends Application {
         }
 
         LoggerFile.Init(true);
-        LoggerFile.LogInfo("FlamingApplication initialization completed");
+        LoggerFile.LogInfo("MyApplication initialization completed");
 
         // 创建 bitmapUtils
         PictureUtil.Init();
