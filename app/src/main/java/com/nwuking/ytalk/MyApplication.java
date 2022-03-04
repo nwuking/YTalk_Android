@@ -23,8 +23,8 @@ public class MyApplication extends Application {
 
     private ChatMsgDb mChatMsgDb;
 
-    private static String mChatServerIp = "120.55.94.78";
-    private static short mChatServerPort = 20000;
+    private static String mChatServerIp = "119.91.103.205";
+    private static short mChatServerPort = 10000;
     private static String mImgServerIp = "120.55.94.78";
     private static short mImgServerPort = 20001;
     private static String mFileServerIp = "120.55.94.78";

@@ -49,7 +49,7 @@
             android:textSize="15sp" />
 
         <EditText
-            android:id="@+id/et_mobile"
+            android:id="@+id/et_name"
             android:layout_width="0sp"
             android:layout_height="45dp"
             android:layout_weight="1"
@@ -82,7 +82,7 @@
             android:textSize="15sp" />
 
         <EditText
-            android:id="@+id/et_name"
+            android:id="@+id/et_nickname"
             android:layout_width="0sp"
             android:layout_height="45dp"
             android:layout_weight="1"

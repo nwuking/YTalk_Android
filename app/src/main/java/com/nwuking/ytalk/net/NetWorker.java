@@ -11,6 +11,7 @@ import android.os.Message;
 import android.util.JsonReader;
 import android.util.JsonToken;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
 
@@ -71,12 +72,14 @@ public class NetWorker {
     //最大的包不能超过5M
     private final static int MAX_PACKAGE_SIZE = 5 * 1024 * 1024;
 
-    private static String mChatServerIp = "101.37.25.166";
-    private static short mChatServerPort = 20000;
+    private static String mChatServerIp = "119.91.103.205";
+    private static short mChatServerPort = 10000;
     private static String mFileServerIp = "101.37.25.166";
     private static short mFileServerPort = 20001;
     private static String mImgServerIp = "101.37.25.166";
     private static short mImgServerPort = 20002;
+
+
 
     private static Socket mSocket;
     private static DataInputStream mDataInputStream;
@@ -125,6 +128,8 @@ public class NetWorker {
         mFileServerPort = port;
     }
 
+
+
     public static String getChatServerIp() {
         return mChatServerIp;
     }
@@ -149,6 +154,7 @@ public class NetWorker {
     public static int getFilePort() {
         return mFileServerPort;
     }
+
 
     public static int getNetworkerType() {
         return 1;
@@ -281,6 +287,7 @@ public class NetWorker {
         new Thread() {
             @Override
             public void run() {
+
                 Socket _socket = null;
                 DataOutputStream _dataOutputStream = null;
                 DataInputStream _dataInputStream = null;
@@ -300,13 +307,14 @@ public class NetWorker {
                     _socket.setSoTimeout(500);
 
                     BinaryWriteStream writeStream = new BinaryWriteStream();
-                    writeStream.writeInt32(MsgType.msg_type_register);
+                    writeStream.writeInt32(MsgType.MSG_ORDER_REGISTER);
                     writeStream.writeInt32(0);
-                    String strJson = "{\"username\": \"";
+                    //writeStream.writeInt32(0);
+                    String strJson = "{\"u_name\": \"";
                     strJson += username;
-                    strJson += "\", \"nickname\": \"";
+                    strJson += "\", \"u_nickname\": \"";
                     strJson += nickname;
-                    strJson += "\", \"password\": \"";
+                    strJson += "\", \"u_password\": \"";
                     strJson += password;
                     strJson += "\"}";
                     writeStream.writeString(strJson);
@@ -315,14 +323,14 @@ public class NetWorker {
                     _dataOutputStream = new DataOutputStream(new BufferedOutputStream(_socket.getOutputStream()));
                     if (_dataOutputStream == null) {
                         close(_socket, null, null);
-                        notifyUI(MsgType.msg_type_register, MsgType.ERROR_CODE_UNKNOWNFAILED, 0, null);
+                        notifyUI(MsgType.MSG_ORDER_REGISTER, MsgType.ERROR_CODE_UNKNOWNFAILED, 0, null);
                         return;
                     }
 
                     byte[] b = writeStream.getBytesArray();
                     if (b == null) {
                         close(_socket, _dataOutputStream, null);
-                        notifyUI(MsgType.msg_type_register, MsgType.ERROR_CODE_UNKNOWNFAILED, 0, null);
+                        notifyUI(MsgType.MSG_ORDER_REGISTER, MsgType.ERROR_CODE_UNKNOWNFAILED, 0, null);
                         return;
                     }
 
@@ -342,14 +350,14 @@ public class NetWorker {
                         //Log.i(TAG, "写入流异常");
                         //e.printStackTrace();
                         close(_socket, _dataOutputStream, null);
-                        notifyUI(MsgType.msg_type_register, MsgType.ERROR_CODE_UNKNOWNFAILED, 0, null);
+                        notifyUI(MsgType.MSG_ORDER_REGISTER, MsgType.ERROR_CODE_UNKNOWNFAILED, 0, null);
                         return;
                     }
 
                     _dataInputStream = new DataInputStream(new BufferedInputStream(_socket.getInputStream()));
                     if (_dataInputStream == null) {
                         close(_socket, _dataOutputStream, _dataInputStream);
-                        notifyUI(MsgType.msg_type_register, MsgType.ERROR_CODE_UNKNOWNFAILED, 0, null);
+                        notifyUI(MsgType.MSG_ORDER_REGISTER, MsgType.ERROR_CODE_UNKNOWNFAILED, 0, null);
                         return;
                     }
 
@@ -361,7 +369,7 @@ public class NetWorker {
                     if (packagelength <= 0 || packagelength > 65535) {
                         close(_socket, _dataOutputStream, _dataInputStream);
                         LoggerFile.LogError("recv a strange packagelength: " + packagelength);
-                        notifyUI(MsgType.msg_type_register, MsgType.ERROR_CODE_UNKNOWNFAILED, 0, null);
+                        notifyUI(MsgType.MSG_ORDER_REGISTER, MsgType.ERROR_CODE_UNKNOWNFAILED, 0, null);
                         return;
                     }
 
@@ -380,24 +388,26 @@ public class NetWorker {
                         registerResult = bodybuf;
                     if (registerResult == null || registerResult.length != packagelength) {
                         close(_socket, _dataOutputStream, _dataInputStream);
-                        notifyUI(MsgType.msg_type_register, MsgType.ERROR_CODE_UNKNOWNFAILED, 0, null);
+                        notifyUI(MsgType.MSG_ORDER_REGISTER, MsgType.ERROR_CODE_UNKNOWNFAILED, 0, null);
                         return;
                     }
 
                     BinaryReadStream binaryReadStream = new BinaryReadStream(registerResult);
+                    //读取数据头
                     cmd = binaryReadStream.readInt32();
                     seq = binaryReadStream.readInt32();
+                    int reserve = binaryReadStream.readInt32();
                     retJson = binaryReadStream.readString();
 
                 } catch (Exception e) {
                     close(_socket, _dataOutputStream, _dataInputStream);
-                    notifyUI(MsgType.msg_type_register, MsgType.ERROR_CODE_UNKNOWNFAILED, 0, null);
+                    notifyUI(MsgType.MSG_ORDER_REGISTER, MsgType.ERROR_CODE_UNKNOWNFAILED, 0, null);
                     return;
                 }
 
-                if (cmd != MsgType.msg_type_register || retJson == "") {
+                if (cmd != MsgType.MSG_ORDER_REGISTER || retJson == "") {
                     close(_socket, _dataOutputStream, _dataInputStream);
-                    notifyUI(MsgType.msg_type_register, MsgType.ERROR_CODE_UNKNOWNFAILED, 0, null);
+                    notifyUI(MsgType.MSG_ORDER_REGISTER, MsgType.ERROR_CODE_UNKNOWNFAILED, 0, null);
                     return;
                 }
 
@@ -411,9 +421,7 @@ public class NetWorker {
                         String name = reader.nextName();
                         if (name.equals("code")) {
                             retcode = reader.nextInt();
-                            //注册只需要一个结果码就可以了
-                            //TODO: 不能break吗？
-                            // break;
+
                         } else {
                             reader.skipValue();
                         }
@@ -438,10 +446,11 @@ public class NetWorker {
 
                 }
 
-                notifyUI(MsgType.msg_type_register, retcode, 0, null);
+                notifyUI(MsgType.MSG_ORDER_REGISTER, retcode, 0, null);
             }
 
         }.start();
+
     }
 
     //太啰嗦的代码，需要优化；

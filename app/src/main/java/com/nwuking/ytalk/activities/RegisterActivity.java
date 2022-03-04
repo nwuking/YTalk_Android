@@ -14,10 +14,10 @@ import com.nwuking.ytalk.R;
 import com.nwuking.ytalk.net.NetWorker;
 
 public class RegisterActivity extends BaseActivity {
-    private EditText et_mobile, et_name, et_password, et_surepwd;
+    private EditText et_name, et_nickname, et_password, et_surepwd;
     private Button makesure_register;
     private String mobile, username, password;
-    private String szAccountNo, szNickName, szPasswd, surePasswd;
+    private String u_name, u_nickname, u_password, surePasswd;
 
     @Override
     protected int getContentView() {
@@ -31,14 +31,19 @@ public class RegisterActivity extends BaseActivity {
 
     @Override
     protected void setData() {
+        makesure_register = (Button)findViewById(R.id.makesure_register);
         makesure_register.setOnClickListener(this);
+        et_name = (EditText)findViewById(R.id.et_name);
+        et_nickname = (EditText)findViewById(R.id.et_nickname);
+        et_password = (EditText)findViewById(R.id.et_password);
+        et_surepwd = (EditText)findViewById(R.id.et_surepwd);
     }
 
     @Override
     public void onClick(View v) {
-        szAccountNo = et_mobile.getText().toString().trim();
-        szNickName = et_name.getText().toString().trim();
-        szPasswd = et_password.getText().toString().trim();
+        u_name = et_name.getText().toString().trim();
+        u_nickname = et_nickname.getText().toString().trim();
+        u_password = et_password.getText().toString().trim();
         surePasswd = et_surepwd.getText().toString().trim();
         switch (v.getId()) {
             case R.id.btn_back:
@@ -54,28 +59,33 @@ public class RegisterActivity extends BaseActivity {
                 }
 
                 // 注册
-                if (szAccountNo.trim().length() <= 0) {
-                    Toast.makeText(this, "请输入账户名！", Toast.LENGTH_SHORT).show();
+                if (u_name.trim().length() != 11) {
+                    Toast.makeText(this, "请输入11位的账户名！", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (szNickName.trim().length() < 0) {
+                if (u_nickname.trim().length() < 0) {
                     Toast.makeText(this, "请输入用户名！", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                if (szPasswd.length() < 3 || szPasswd.length() > 20) {
+                if (u_password.length() < 3 || u_password.length() > 20) {
                     Toast.makeText(this, "密码请输入6-16位字符！！", Toast.LENGTH_SHORT)
                             .show();
                     return;
                 }
-                if (surePasswd.length() < 3 || surePasswd.length() > 20) {
+                if (!surePasswd.equals(u_password)) {
                     Toast.makeText(this, "两次密码输入不一致！！", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 Button btnRegister = (Button)findViewById(R.id.makesure_register);
-                btnRegister.setEnabled(false);
-                NetWorker.registerUser(szAccountNo, szPasswd, szNickName);
+                //btnRegister.setEnabled(false);
+                //btnRegister.setVisibility();
+                NetWorker.registerUser(u_name, u_password, u_nickname);
+                //String opStr = ""+op;
+
+                    //Toast.makeText(this, "连接不到服务器！！"+opStr, Toast.LENGTH_SHORT).show();
+
                 break;
 
             default:
@@ -91,8 +101,8 @@ public class RegisterActivity extends BaseActivity {
                 Toast.makeText(this, "注册成功", Toast.LENGTH_SHORT).show();
                 //将用户名和密码传给登录界面
                 Intent intent = new Intent();
-                intent.putExtra("register_username", szAccountNo);
-                intent.putExtra("register_password", szPasswd);
+                intent.putExtra("register_username", u_name);
+                intent.putExtra("register_password", u_password);
                 setResult(BaseActivity.REGISTER_RESULT_OK, intent);
                 //startActivity(intent);
                 finish();
