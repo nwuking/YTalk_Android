@@ -96,7 +96,7 @@ public class RegisterActivity extends BaseActivity {
     @Override
     public void processMessage(Message msg) {
         super.processMessage(msg);
-        if (msg.what == MsgType.msg_type_register) {
+        if (msg.what == MsgType.MSG_ORDER_REGISTER) {
             if (msg.arg1 == MsgType.ERROR_CODE_SUCCESS) {
                 Toast.makeText(this, "注册成功", Toast.LENGTH_SHORT).show();
                 //将用户名和密码传给登录界面
@@ -110,7 +110,7 @@ public class RegisterActivity extends BaseActivity {
                 Toast.makeText(this, "该用户已被注册", Toast.LENGTH_SHORT).show();
 
             } else  {
-                Toast.makeText(this, "注册失败", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "注册失败"+msg.arg1, Toast.LENGTH_SHORT).show();
             }
 
             Button btnRegister = (Button)findViewById(R.id.makesure_register);

@@ -59,6 +59,10 @@ public abstract class BaseAdapter<T> extends android.widget.BaseAdapter {
 
     }
 
+    public BaseAdapter() {
+
+    }
+
     public List<T> getList() {
         return list;
     }

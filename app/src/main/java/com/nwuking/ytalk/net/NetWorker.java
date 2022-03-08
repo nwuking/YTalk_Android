@@ -369,7 +369,7 @@ public class NetWorker {
                     if (packagelength <= 0 || packagelength > 65535) {
                         close(_socket, _dataOutputStream, _dataInputStream);
                         LoggerFile.LogError("recv a strange packagelength: " + packagelength);
-                        notifyUI(MsgType.MSG_ORDER_REGISTER, MsgType.ERROR_CODE_UNKNOWNFAILED, 0, null);
+                        notifyUI(MsgType.MSG_ORDER_REGISTER, 1113, 0, null);
                         return;
                     }
 
@@ -388,7 +388,7 @@ public class NetWorker {
                         registerResult = bodybuf;
                     if (registerResult == null || registerResult.length != packagelength) {
                         close(_socket, _dataOutputStream, _dataInputStream);
-                        notifyUI(MsgType.MSG_ORDER_REGISTER, MsgType.ERROR_CODE_UNKNOWNFAILED, 0, null);
+                        notifyUI(MsgType.MSG_ORDER_REGISTER, 520, 0, null);
                         return;
                     }
 
@@ -396,23 +396,24 @@ public class NetWorker {
                     //读取数据头
                     cmd = binaryReadStream.readInt32();
                     seq = binaryReadStream.readInt32();
-                    int reserve = binaryReadStream.readInt32();
+                    //int reserve = binaryReadStream.readInt32();
+
                     retJson = binaryReadStream.readString();
 
                 } catch (Exception e) {
                     close(_socket, _dataOutputStream, _dataInputStream);
-                    notifyUI(MsgType.MSG_ORDER_REGISTER, MsgType.ERROR_CODE_UNKNOWNFAILED, 0, null);
+                    notifyUI(MsgType.MSG_ORDER_REGISTER, 1121, 0, null);
                     return;
                 }
 
                 if (cmd != MsgType.MSG_ORDER_REGISTER || retJson == "") {
                     close(_socket, _dataOutputStream, _dataInputStream);
-                    notifyUI(MsgType.MSG_ORDER_REGISTER, MsgType.ERROR_CODE_UNKNOWNFAILED, 0, null);
+                    notifyUI(MsgType.MSG_ORDER_REGISTER, 99, 0, null);
                     return;
                 }
 
                 //{"code": 0, "msg": "ok"}
-                int retcode = MsgType.ERROR_CODE_UNKNOWNFAILED;
+                int retcode = 100;
                 try {
                     JsonReader reader = new JsonReader(new StringReader(retJson));
 
@@ -421,6 +422,7 @@ public class NetWorker {
                         String name = reader.nextName();
                         if (name.equals("code")) {
                             retcode = reader.nextInt();
+                            //retcode = MsgType.MSG_ORDER_REGISTER;
 
                         } else {
                             reader.skipValue();
@@ -471,7 +473,7 @@ public class NetWorker {
                     BinaryWriteStream writeStream = new BinaryWriteStream();
                     writeStream.writeInt32(MsgType.msg_type_login);
                     writeStream.writeInt32(0);
-                    String strJson = String.format("{\"username\": \"%s\", \"password\": \"%s\", \"clienttype\": %d, \"status\": %d}",
+                    String strJson = String.format("{\"u_name\": \"%s\", \"u_password\": \"%s\", \"clienttype\": %d, \"status\": %d}",
                             username, password, clientType, status);
                     writeStream.writeString(strJson);
                     writeStream.flush();
@@ -479,14 +481,14 @@ public class NetWorker {
                     mDataOutputStream = new DataOutputStream(new BufferedOutputStream(mSocket.getOutputStream()));
                     if (mDataOutputStream == null) {
                         close(mSocket, mDataOutputStream, mDataInputStream);
-                        notifyUI(MsgType.msg_type_register, MsgType.ERROR_CODE_UNKNOWNFAILED, 0, null);
+                        notifyUI(MsgType.MSG_ORDER_LOGIN, MsgType.ERROR_CODE_UNKNOWNFAILED, 0, null);
                         return;
                     }
 
                     byte[] b = writeStream.getBytesArray();
                     if (b == null) {
                         close(mSocket, mDataOutputStream, mDataInputStream);
-                        notifyUI(MsgType.msg_type_login, MsgType.ERROR_CODE_UNKNOWNFAILED, 0, null);
+                        notifyUI(MsgType.MSG_ORDER_LOGIN, MsgType.ERROR_CODE_UNKNOWNFAILED, 0, null);
                         return;
                     }
 
@@ -506,14 +508,14 @@ public class NetWorker {
                         //Log.i(TAG, "写入流异常");
                         //e.printStackTrace();
                         close(mSocket, mDataOutputStream, mDataInputStream);
-                        notifyUI(MsgType.msg_type_login, MsgType.ERROR_CODE_UNKNOWNFAILED, 0, null);
+                        notifyUI(MsgType.MSG_ORDER_LOGIN, MsgType.ERROR_CODE_UNKNOWNFAILED, 0, null);
                         return;
                     }
 
                     mDataInputStream = new DataInputStream(new BufferedInputStream(mSocket.getInputStream()));
                     if (mDataInputStream == null) {
                         close(mSocket, mDataOutputStream, mDataInputStream);
-                        notifyUI(MsgType.msg_type_login, MsgType.ERROR_CODE_UNKNOWNFAILED, 0, null);
+                        notifyUI(MsgType.MSG_ORDER_LOGIN, MsgType.ERROR_CODE_UNKNOWNFAILED, 0, null);
                         return;
                     }
 
@@ -525,7 +527,7 @@ public class NetWorker {
                     if (packagelength <= 0 || packagelength > 65535) {
                         close(mSocket, mDataOutputStream, mDataInputStream);
                         LoggerFile.LogError("recv a strange packagelength: " + packagelength);
-                        notifyUI(MsgType.msg_type_login, MsgType.ERROR_CODE_UNKNOWNFAILED, 0, null);
+                        notifyUI(MsgType.MSG_ORDER_LOGIN, MsgType.ERROR_CODE_UNKNOWNFAILED, 0, null);
                         return;
                     }
 
@@ -544,7 +546,7 @@ public class NetWorker {
                         loginResult = bodybuf;
                     if (loginResult == null || loginResult.length != packagelength) {
                         close(mSocket, mDataOutputStream, mDataInputStream);
-                        notifyUI(MsgType.msg_type_login, MsgType.ERROR_CODE_UNKNOWNFAILED, 0, null);
+                        notifyUI(MsgType.MSG_ORDER_LOGIN, MsgType.ERROR_CODE_UNKNOWNFAILED, 0, null);
                         return;
                     }
 
@@ -561,13 +563,13 @@ public class NetWorker {
 
                 } catch (Exception e) {
                     close(mSocket, mDataOutputStream, mDataInputStream);
-                    notifyUI(MsgType.msg_type_login, MsgType.ERROR_CODE_UNKNOWNFAILED, 0, null);
+                    notifyUI(MsgType.MSG_ORDER_LOGIN, MsgType.ERROR_CODE_UNKNOWNFAILED, 0, null);
                     return;
                 }
 
-                if (cmd != MsgType.msg_type_login || retJson == "") {
+                if (cmd != MsgType.MSG_ORDER_LOGIN || retJson == "") {
                     close(mSocket, mDataOutputStream, mDataInputStream);
-                    notifyUI(MsgType.msg_type_login, MsgType.ERROR_CODE_UNKNOWNFAILED, 0, null);
+                    notifyUI(MsgType.MSG_ORDER_LOGIN, MsgType.ERROR_CODE_UNKNOWNFAILED, 0, null);
                     return;
                 }
 
@@ -588,28 +590,22 @@ public class NetWorker {
                         String name = reader.nextName();
                         if (name.equals("code")) {
                             retcode = reader.nextInt();
-                        } else if (name.equals("userid")) {
+                        } else if (name.equals("u_id")) {
                             loginUserInfo.set_userid(reader.nextInt());
-                        } else if (name.equals("username")) {
+                        } else if (name.equals("u_name")) {
                             loginUserInfo.set_username(reader.nextString());
-                        } else if (name.equals("nickname")) {
+                        } else if (name.equals("u_nickname")) {
                             loginUserInfo.set_nickname(reader.nextString());
-                        } else if (name.equals("facetype")) {
+                        } else if (name.equals("u_faceType")) {
                             loginUserInfo.set_faceType(reader.nextInt());
-                        } else if (name.equals("customface")) {
+                        } else if (name.equals("u_face")) {
                             loginUserInfo.set_customFacePath(reader.nextString());
-                        } else if (name.equals("gender")) {
+                        } else if (name.equals("u_gender")) {
                             loginUserInfo.set_gender(reader.nextInt());
-                        } else if (name.equals("birthday")) {
+                        } else if (name.equals("u_birthday")) {
                             loginUserInfo.set_birthday(reader.nextInt());
-                        } else if (name.equals("signature")) {
+                        } else if (name.equals("u_signature")) {
                             loginUserInfo.set_signature(reader.nextString());
-                        } else if (name.equals("address")) {
-                            loginUserInfo.set_address(reader.nextString());
-                        } else if (name.equals("phonenumber")) {
-                            loginUserInfo.set_phoneNumber(reader.nextString());
-                        } else if (name.equals("mail")) {
-                            loginUserInfo.set_mail(reader.nextString());
                         } else {
                             reader.skipValue();
                         }
@@ -646,7 +642,7 @@ public class NetWorker {
                     }
                 }
 
-                notifyUI(MsgType.msg_type_login, retcode, 0, null);
+                notifyUI(MsgType.MSG_ORDER_LOGIN, retcode, 0, null);
             }
 
         }.start();
@@ -654,7 +650,7 @@ public class NetWorker {
 
     //获取好友列表
     public static void getFriendList() {
-        NetPackage netPackage = new NetPackage(MsgType.msg_type_getfriendlist, mSeq, "");
+        NetPackage netPackage = new NetPackage(MsgType.MSG_ORDER_GET_FRIENDS_LIST, mSeq, "");
         mSeq++;
         addPackage(netPackage);
     }
@@ -771,7 +767,7 @@ public class NetWorker {
                         return;
                     }
 
-                    if (parser.mCmd != MsgType.msg_type_unknown)
+                    if (parser.mCmd != MsgType.MSG_ORDER_UNKNOW)
                         handleServerResponseMsg(parser);
                 }//end while-loop
             }// end run
@@ -869,7 +865,7 @@ public class NetWorker {
 
         switch (parser.mCmd) {
             //好友列表
-            case MsgType.msg_type_getfriendlist:
+            case MsgType.MSG_ORDER_GET_FRIENDS_LIST:
                 handleFriendList(parser.mJson);
                 break;
 
@@ -948,9 +944,6 @@ public class NetWorker {
 							"gender": 1,
 							"birthday": 19900101,
 							"signature": "hello qqq~kppp",
-							"address": "",
-							"phonenumber": "",
-							"mail": "",
 							"clienttype": 1,
 							"status": 1
 						}
@@ -960,7 +953,7 @@ public class NetWorker {
 		}
        */
 
-        LoggerFile.LogInfo("response friend list:", data);
+        //LoggerFile.LogInfo("response friend list:", data);
         int retCode = 0;
 
         UserSession.getInstance().clearFriendInfo();
@@ -989,17 +982,17 @@ public class NetWorker {
                                     UserInfo u = new UserInfo();
                                     while (reader.hasNext()) {
                                         String nodename2 = reader.nextName();
-                                        if (nodename2.equals("userid")) {
+                                        if (nodename2.equals("u_id")) {
                                             u.set_userid(reader.nextInt());
-                                        } else if (nodename2.equals("username")) {
+                                        } else if (nodename2.equals("u_name")) {
                                             u.set_username(reader.nextString());
-                                        } else if (nodename2.equals("nickname")) {
+                                        } else if (nodename2.equals("u_nickname")) {
                                             u.set_nickname(reader.nextString());
-                                        } else if (nodename2.equals("signature")) {
+                                        } else if (nodename2.equals("u_signature")) {
                                             u.set_signature(reader.nextString());
-                                        } else if (nodename2.equals("facetype")) {
+                                        } else if (nodename2.equals("u_faceType")) {
                                             u.set_faceType(reader.nextInt());
-                                        } else if (nodename2.equals("customface")) {
+                                        } else if (nodename2.equals("u_face")) {
                                             u.set_customFacePath(reader.nextString());
                                         } else if (nodename2.equals("status")) {
                                             u.set_onlinetype(reader.nextInt());
@@ -1061,7 +1054,7 @@ public class NetWorker {
 //		}
 
         Message msg = new Message();
-        msg.what = MsgType.msg_type_getfriendlist;
+        msg.what = MsgType.MSG_ORDER_GET_FRIENDS_LIST;
         msg.arg1 = retCode;
         BaseActivity.sendMessage(msg);
     }

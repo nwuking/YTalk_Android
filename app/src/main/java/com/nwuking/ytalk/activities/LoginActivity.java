@@ -162,13 +162,11 @@ public class LoginActivity extends BaseActivity {
                 if (mUsername.length() <= 0) {
                     Toast.makeText(this, "请输入用户名！", Toast.LENGTH_SHORT).show();
                     return;
-                    //mUsername = "zhangy";
                 }
 
                 if (mPassword.length() <= 0) {
                     Toast.makeText(this, "请输入密码！", Toast.LENGTH_SHORT).show();
                     return;
-                    //mPassword = "123";
                 }
 
                 enableUI(false);
@@ -224,14 +222,11 @@ public class LoginActivity extends BaseActivity {
 
     @Override
     public void processMessage(Message msg) {
-        if (msg.what == MsgType.msg_type_login) {
-            //rl_progressbar.setVisibility(View.GONE);
-            //enableUI(true);
-            //TODO: 这些字符，将来放到strings.xml文件中
+        if (msg.what == MsgType.MSG_ORDER_LOGIN) {
             if (msg.arg1 == MsgType.ERROR_CODE_SUCCESS) {
                 //登录成功，记录用户名和密码
-                SharedPreferencesUtils.put(this, "username", mUsername);
-                SharedPreferencesUtils.put(this, "password", mPassword);
+                SharedPreferencesUtils.put(this, "u_name", mUsername);
+                SharedPreferencesUtils.put(this, "u_password", mPassword);
 
                 mTvProgressText.setText("登录信息验证成功");
                 mProgressBar.setProgress(10);
@@ -262,7 +257,7 @@ public class LoginActivity extends BaseActivity {
             }
 
 
-        } else if (msg.what == MsgType.msg_type_getfriendlist) {
+        } else if (msg.what == MsgType.MSG_ORDER_GET_FRIENDS_LIST) {
             //Toast.makeText(this, "加载好友列表信息成功", Toast.LENGTH_SHORT).show();
             //rl_progressbar.setVisibility(View.GONE);
 

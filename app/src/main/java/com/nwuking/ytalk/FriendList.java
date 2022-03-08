@@ -142,16 +142,16 @@ public class FriendList {
              * username : zhangy
              */
 
-            private String address;
+            //private String address;
             private int birthday;
             private int clienttype;
             private String customface;
             private int facetype;
             private int gender;
-            private String mail;
+            //private String mail;
             private String markname;
             private String nickname;
-            private String phonenumber;
+            //private String phonenumber;
             private String signature;
             private int status;
             private int userid;
@@ -166,14 +166,16 @@ public class FriendList {
                 this.state = state;
             }
 
-            public String getAddress() {
+            /*public String getAddress() {
                 return address;
             }
+             */
 
-            public void setAddress(String address) {
+            /*public void setAddress(String address) {
                 this.address = address;
             }
 
+             */
             public int getBirthday() {
                 return birthday;
             }
@@ -214,13 +216,17 @@ public class FriendList {
                 this.gender = gender;
             }
 
-            public String getMail() {
+            /*public String getMail() {
                 return mail;
             }
 
-            public void setMail(String mail) {
+             */
+
+            /*public void setMail(String mail) {
                 this.mail = mail;
             }
+
+             */
 
             public String getMarkname() {
                 return markname;
@@ -238,13 +244,17 @@ public class FriendList {
                 this.nickname = nickname;
             }
 
-            public String getPhonenumber() {
+            /*public String getPhonenumber() {
                 return phonenumber;
             }
 
-            public void setPhonenumber(String phonenumber) {
+             */
+
+            /*public void setPhonenumber(String phonenumber) {
                 this.phonenumber = phonenumber;
             }
+
+             */
 
             public String getSignature() {
                 return signature;
