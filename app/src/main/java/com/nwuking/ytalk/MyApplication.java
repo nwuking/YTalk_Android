@@ -2,6 +2,7 @@ package com.nwuking.ytalk;
 
 import android.app.Application;
 import android.content.Context;
+import android.os.Environment;
 import android.widget.Toast;
 
 import com.lidroid.xutils.DbUtils;
@@ -72,18 +73,21 @@ public class MyApplication extends Application {
         //创建flamingo根目录
         String path = DEFAULT_APP_PATH;
         File appDir = new File(path);
+        //File appDir = new File(Environment.getExternalStorageDirectory()+"/YTalk");
         if (!appDir.exists()) {
             appDir.mkdir();
         }
 
         //创建Users目录
         File usersDir = new File(DEFAULT_USERS_PATH);
+        //File usersDir = new File(Environment.getExternalStorageDirectory()+"/YTalk/Users");
         if(!usersDir.exists()){
             usersDir.mkdir();
         }
 
         //创建Logs目录
-        File logsDir = new File(DEFAULT_LOG_PATH);
+        //File logsDir = new File(DEFAULT_LOG_PATH);
+        File logsDir = new File(Environment.getExternalStorageDirectory()+"/YTalk/Logs");
         if(!logsDir.exists()){
             logsDir.mkdir();
         }

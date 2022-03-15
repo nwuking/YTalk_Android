@@ -219,7 +219,7 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-        new Thread(new Runnable() {
+        /*new Thread(new Runnable() {
             @Override
             public void run() {
                 if (application != null) {
@@ -227,6 +227,8 @@ public class MainActivity extends BaseActivity {
                 }
             }
         }).start();
+
+         */
     }
 
     @Override

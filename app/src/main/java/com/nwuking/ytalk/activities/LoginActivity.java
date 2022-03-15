@@ -250,7 +250,7 @@ public class LoginActivity extends BaseActivity {
                 mTvProgressText.setText("");
                 enableUI(true);
             } else {
-                Toast.makeText(this, "登录失败", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "登录失败"+msg.arg2, Toast.LENGTH_SHORT).show();
                 mProgressBar.setVisibility(View.GONE);
                 mTvProgressText.setText("");
                 enableUI(true);
@@ -322,7 +322,7 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void enableUI(boolean enabled) {
-        mTvServerSet.setEnabled(enabled);
+        //mTvServerSet.setEnabled(enabled);
         mEdtUsername.setEnabled(enabled);
         mEdtPassword.setEnabled(enabled);
         mBtnLogin.setEnabled(enabled);

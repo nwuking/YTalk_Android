@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Environment;
 import android.os.Message;
 import android.util.JsonReader;
 import android.util.JsonToken;
@@ -55,6 +56,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -463,6 +467,7 @@ public class NetWorker {
             public void run() {
                 int cmd;
                 int seq;
+                int p;
                 String retJson;
                 try {
                     mSocket = new Socket();
@@ -471,7 +476,7 @@ public class NetWorker {
 
                     mSocket.setSoTimeout(500);
                     BinaryWriteStream writeStream = new BinaryWriteStream();
-                    writeStream.writeInt32(MsgType.msg_type_login);
+                    writeStream.writeInt32(MsgType.MSG_ORDER_LOGIN);
                     writeStream.writeInt32(0);
                     String strJson = String.format("{\"u_name\": \"%s\", \"u_password\": \"%s\", \"clienttype\": %d, \"status\": %d}",
                             username, password, clientType, status);
@@ -515,7 +520,7 @@ public class NetWorker {
                     mDataInputStream = new DataInputStream(new BufferedInputStream(mSocket.getInputStream()));
                     if (mDataInputStream == null) {
                         close(mSocket, mDataOutputStream, mDataInputStream);
-                        notifyUI(MsgType.MSG_ORDER_LOGIN, MsgType.ERROR_CODE_UNKNOWNFAILED, 0, null);
+                        notifyUI(MsgType.MSG_ORDER_LOGIN, MsgType.ERROR_CODE_UNKNOWNFAILED, 10, null);
                         return;
                     }
 
@@ -523,11 +528,12 @@ public class NetWorker {
                     byte compressFlag = mDataInputStream.readByte();
                     int rawpackagelength = mDataInputStream.readInt();
                     int packagelength = BinaryReadStream.intToBigEndian(rawpackagelength);
+                    p = packagelength;
                     //TODO: 很奇怪的包头，直接断开连接
                     if (packagelength <= 0 || packagelength > 65535) {
                         close(mSocket, mDataOutputStream, mDataInputStream);
                         LoggerFile.LogError("recv a strange packagelength: " + packagelength);
-                        notifyUI(MsgType.MSG_ORDER_LOGIN, MsgType.ERROR_CODE_UNKNOWNFAILED, 0, null);
+                        notifyUI(MsgType.MSG_ORDER_LOGIN, MsgType.ERROR_CODE_UNKNOWNFAILED, 11, null);
                         return;
                     }
 
@@ -546,7 +552,7 @@ public class NetWorker {
                         loginResult = bodybuf;
                     if (loginResult == null || loginResult.length != packagelength) {
                         close(mSocket, mDataOutputStream, mDataInputStream);
-                        notifyUI(MsgType.MSG_ORDER_LOGIN, MsgType.ERROR_CODE_UNKNOWNFAILED, 0, null);
+                        notifyUI(MsgType.MSG_ORDER_LOGIN, MsgType.ERROR_CODE_UNKNOWNFAILED, 12, null);
                         return;
                     }
 
@@ -563,13 +569,13 @@ public class NetWorker {
 
                 } catch (Exception e) {
                     close(mSocket, mDataOutputStream, mDataInputStream);
-                    notifyUI(MsgType.MSG_ORDER_LOGIN, MsgType.ERROR_CODE_UNKNOWNFAILED, 0, null);
+                    notifyUI(MsgType.MSG_ORDER_LOGIN, MsgType.ERROR_CODE_UNKNOWNFAILED, 13, null);
                     return;
                 }
 
                 if (cmd != MsgType.MSG_ORDER_LOGIN || retJson == "") {
                     close(mSocket, mDataOutputStream, mDataInputStream);
-                    notifyUI(MsgType.MSG_ORDER_LOGIN, MsgType.ERROR_CODE_UNKNOWNFAILED, 0, null);
+                    notifyUI(MsgType.MSG_ORDER_LOGIN, MsgType.ERROR_CODE_UNKNOWNFAILED, 14, null);
                     return;
                 }
 
@@ -624,25 +630,30 @@ public class NetWorker {
 
                 //登陆成功以后，创建以userid命名的用户目录
                 if (retcode == MsgType.ERROR_CODE_SUCCESS) {
+
                     //创建Logs目录
-                    String userDir = String.format("/sdcard/ytalk/Users/%d", loginUserInfo.get_userid());
-                    File logsDir = new File(userDir);
+                    String userDir = String.format("/YTalk/Users/%d", loginUserInfo.get_userid());
+                    //File logsDir = new File(userDir);
+                    File logsDir = new File(Environment.getExternalStorageDirectory()+userDir);
                     if (!logsDir.exists()) {
-                        if (!logsDir.mkdir()) {
+                        if (!logsDir.mkdirs()) {
                             retcode = MsgType.ERROR_CODE_UNKNOWNFAILED;
+                            p = 58;
                         }
                     }
 
                     String chatImagePath = userDir + "/chatImages";
-                    File chatImageDir = new File(chatImagePath);
+                    File chatImageDir = new File(Environment.getExternalStorageDirectory()+chatImagePath);
+                    //File chatImageDir = new File(chatImagePath);
                     if (!chatImageDir.exists()) {
-                        if (!chatImageDir.mkdir()) {
+                        if (!chatImageDir.mkdirs()) {
                             retcode = MsgType.ERROR_CODE_UNKNOWNFAILED;
+                            p = 85;
                         }
                     }
                 }
 
-                notifyUI(MsgType.MSG_ORDER_LOGIN, retcode, 0, null);
+                notifyUI(MsgType.MSG_ORDER_LOGIN, retcode, p, null);
             }
 
         }.start();
@@ -718,7 +729,7 @@ public class NetWorker {
     }
 
     public static void sendHeartBeat() {
-        NetPackage netPackage = new NetPackage(1000, 0, "");
+        NetPackage netPackage = new NetPackage(MsgType.MSG_ORDER_HEARTBEAT, 0, "");
         mSeq++;
         addPackage(netPackage);
     }
@@ -922,7 +933,8 @@ public class NetWorker {
     // 好友列表
     private static void handleFriendList(String data) {
         if (data.isEmpty()) {
-            LoggerFile.LogInfo("response friend list is empty.");
+            //LoggerFile.LogInfo("response friend list is empty.");
+            Log.d(NETWORKER_TAG, "response friend list is empty.");
             return;
         }
 
@@ -1029,15 +1041,18 @@ public class NetWorker {
         } catch (NumberFormatException e) {
             e.printStackTrace();
 
-            LoggerFile.LogError("parse friend list error, data=", data);
+            //LoggerFile.LogError("parse friend list error, data=", data);
+            Log.d(NETWORKER_TAG, "parse friend list error, data="+data);
             return;
         } catch (IllegalStateException e) {
             e.printStackTrace();
-            LoggerFile.LogError("parse friend list error, data=", data);
+            //LoggerFile.LogError("parse friend list error, data=", data);
+            Log.d(NETWORKER_TAG, "parse friend list error, data="+data);
             return;
         } catch (IOException e) {
             e.printStackTrace();
-            LoggerFile.LogError("parse friend list error, data=", data);
+            //LoggerFile.LogError("parse friend list error, data=", data);
+            Log.d(NETWORKER_TAG, "parse friend list error, data="+data);
             return;
         }
 
