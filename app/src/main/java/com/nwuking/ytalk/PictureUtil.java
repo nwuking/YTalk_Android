@@ -185,7 +185,7 @@ public class PictureUtil {
                     file = new File("/sdcard/com.nwuking.ytalk/"
                             + m_downloadingFiles.get(0).localFileName);
                 } else {
-                    file = new File("/sdcard/org.org.hootina/"
+                    file = new File("/sdcard/com.nwuking.ytalk/"
                             + m_downloadingFiles.get(0).localFileName);
                 }
                 fop = new FileOutputStream(file);

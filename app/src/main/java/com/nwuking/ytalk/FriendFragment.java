@@ -335,10 +335,10 @@ public class FriendFragment extends BaseFragment {
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(getActivity(), FriendDetailInfoActivity.class);
-                        intent.putExtra("userid", result.get_userid());
-                        intent.putExtra("nickname", result.get_nickname());
-                        intent.putExtra("username", result.get_username());
-                        intent.putExtra("signature", result.get_signature());
+                        intent.putExtra("u_id", result.get_userid());
+                        intent.putExtra("u_nickname", result.get_nickname());
+                        intent.putExtra("u_name", result.get_username());
+                        intent.putExtra("u_signature", result.get_signature());
                         //getActivity().startActivity(intent);
                         startActivityForResult(intent, 0);
                     }

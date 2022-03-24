@@ -82,8 +82,11 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void onClick(View v) {
+        Toast.makeText(this, "00000000000001", Toast.LENGTH_LONG).show();
         switch (v.getId()) {
+            //Toast.makeText(this, "1111111111111111111111", Toast.LENGTH_LONG).show();
             case R.id.ll_message:
+                Toast.makeText(this, "0000000000000", Toast.LENGTH_LONG).show();
                 setTabSelection(TabbarEnum.MESSAGE);
                 // 调用消息数量的方法
                 ((SessionFragment) messageFragment).refreshSessionList();
@@ -138,21 +141,26 @@ public class MainActivity extends BaseActivity {
     }
 
     private void setTabSelection(TabbarEnum index) {
+        Toast.makeText(this, "1111111111111111111111", Toast.LENGTH_LONG).show();
         // 开启一个Fragment事务
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         // 清除选中状态
         clearSelection(transaction);
-
+        Toast.makeText(this, "2222222222222222222222", Toast.LENGTH_LONG).show();
         switch (index) {
             case MESSAGE:
                 // 消息
+                Toast.makeText(this, "3333333333333333333", Toast.LENGTH_LONG).show();
                 iv_message.setImageResource(R.drawable.tab_weixin_pressed);
                 if (messageFragment == null) {
+                    Toast.makeText(this, "444444444444444444444", Toast.LENGTH_LONG).show();
                     messageFragment = new SessionFragment();
                     transaction.add(R.id.fl_content, messageFragment);
                 } else {
+                    Toast.makeText(this, "55555555555555555555555", Toast.LENGTH_LONG).show();
                     transaction.show(messageFragment);
                 }
+                Toast.makeText(this, "66666666666666666666666666", Toast.LENGTH_LONG).show();
                 mCurrentTabIndex = TabbarEnum.MESSAGE;
                 break;
 
@@ -219,7 +227,7 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-        /*new Thread(new Runnable() {
+        new Thread(new Runnable() {
             @Override
             public void run() {
                 if (application != null) {
@@ -228,7 +236,7 @@ public class MainActivity extends BaseActivity {
             }
         }).start();
 
-         */
+
     }
 
     @Override

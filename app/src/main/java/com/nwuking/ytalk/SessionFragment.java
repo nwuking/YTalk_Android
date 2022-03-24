@@ -90,8 +90,8 @@ public class SessionFragment extends BaseFragment {
 
                     Intent intent = new Intent(getActivity(), ChattingActivity.class);
 
-                    intent.putExtra("nickname", user.getFriendNickName());
-                    intent.putExtra("userid", user.getmSelfID());
+                    intent.putExtra("u_nickname", user.getFriendNickName());
+                    intent.putExtra("u_id", user.getmSelfID());
                     intent.putExtra("msgtexts", "");
                     intent.putExtra("type", "");
                     if (UserInfo.isGroup(user.getSelfID())) {

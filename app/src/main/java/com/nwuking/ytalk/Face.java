@@ -44,7 +44,7 @@ public class Face {
     static int stringToResID(String source){
         String faceID = source.substring(4);
         int id = Integer.parseInt(faceID);
-  /*      if (id == 0)
+        if (id == 0)
             return R.drawable.face0;
         else if (id == 1) {
             return R.drawable.face1;
@@ -61,8 +61,8 @@ public class Face {
 
         return R.drawable.face0;
 
-   */
-  return 0;
+
+  //return 0;
     }
 
 
