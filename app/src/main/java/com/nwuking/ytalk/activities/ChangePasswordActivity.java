@@ -44,7 +44,10 @@ public class ChangePasswordActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-
+        btnsure = (Button)findViewById(R.id.btnsure);
+        et_oldpass = (EditText)findViewById(R.id.et_oldpass);
+        et_newpass = (EditText)findViewById(R.id.et_newpass);
+        et_surepass = (EditText)findViewById(R.id.et_surepass);
     }
 
     @Override

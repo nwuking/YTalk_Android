@@ -195,7 +195,7 @@ public class FriendDetailInfoActivity extends BaseActivity {
 
         if (msg.what == MsgType.msg_type_userstatuschange) {
             finish();
-        } else if (msg.what == MsgType.msg_type_operatefriend) {
+        } else if (msg.what == MsgType.MSG_ORDER_ADD_FRIEND) {
             //删除好友成功
             if (msg.arg1 == 5) {
                 NetWorker.getFriendList();

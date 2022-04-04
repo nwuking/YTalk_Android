@@ -107,7 +107,7 @@ public class NewFriendActivity extends BaseActivity {
     @Override
     public void processMessage(Message msg) {
         super.processMessage(msg);
-        if (msg.what == MsgType.msg_type_operatefriend) {
+        if (msg.what == MsgType.MSG_ORDER_ADD_FRIEND) {
             //收到加好友信息
             if (msg.arg1 == OperateFriendEnum.OPERATE_FRIEND_RECV_APPLY) {
                 mUsers.add((Contacts) msg.obj);

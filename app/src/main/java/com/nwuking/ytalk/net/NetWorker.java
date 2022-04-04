@@ -686,7 +686,7 @@ public class NetWorker {
     public static void deleteFriend(int userid) {
         Contacts contacts = new Contacts(userid, 4);
         String json = new Gson().toJson(contacts, Contacts.class);
-        NetPackage netPackage = new NetPackage(MsgType.msg_type_operatefriend, mSeq, json);
+        NetPackage netPackage = new NetPackage(MsgType.MSG_ORDER_ADD_FRIEND, mSeq, json);
         mSeq++;
         addPackage(netPackage);
     }
@@ -700,7 +700,7 @@ public class NetWorker {
     public static void searchPersonOrGroup(int type, String userName) {
         try {
             SearchUser searchUser = new SearchUser(type, userName);
-            NetPackage netPackage = new NetPackage(MsgType.msg_type_finduser, mSeq, new Gson().toJson(searchUser, SearchUser.class));
+            NetPackage netPackage = new NetPackage(MsgType.MSG_ORDER_FIND_FRIEND, mSeq, new Gson().toJson(searchUser, SearchUser.class));
             mSeq++;
             addPackage(netPackage);
         } catch (Exception e) {
@@ -714,7 +714,7 @@ public class NetWorker {
     //cmd = 1005, seq = 0, {"userid": 9, "type": 1}
     public static void addFriend(int userid) {
         Contacts addUser = new Contacts(userid, 1);
-        NetPackage netPackage = new NetPackage(MsgType.msg_type_operatefriend, mSeq, new Gson().toJson(addUser, Contacts.class));
+        NetPackage netPackage = new NetPackage(MsgType.MSG_ORDER_ADD_FRIEND, mSeq, new Gson().toJson(addUser, Contacts.class));
         mSeq++;
         addPackage(netPackage);
     }
@@ -723,7 +723,7 @@ public class NetWorker {
     //cmd = 1005, seq = 0, {"userid": 9, "type": 3, "username": "xxx", "accept": 1}
     public static void acceptNewFriend(int userid, String userName) {
         Contacts addUser = new Contacts(userid, 3, userName, 1);
-        NetPackage netPackage = new NetPackage(MsgType.msg_type_operatefriend, mSeq, new Gson().toJson(addUser, Contacts.class));
+        NetPackage netPackage = new NetPackage(MsgType.MSG_ORDER_ADD_FRIEND, mSeq, new Gson().toJson(addUser, Contacts.class));
         mSeq++;
         addPackage(netPackage);
     }
@@ -892,15 +892,17 @@ public class NetWorker {
                 break;
 
             //搜索好友，群
-            case MsgType.msg_type_finduser:
+            case MsgType.MSG_ORDER_FIND_FRIEND:
                 handleFindUserResult(parser.mJson);
                 break;
 
             //添加好友
+            case MsgType.MSG_ORDER_ADD_FRIEND:
+                handleAddFriend(parser.mJson);
+                break;
             case MsgType.msg_type_operatefriend:
                 handleOperateFriend(parser.mJson);
                 break;
-
             //建群结果返回
             case MsgType.msg_type_creategroup:
                 handleCreateGroupResult(parser.mJson);
@@ -1454,13 +1456,13 @@ public class NetWorker {
 
                         while(reader.hasNext()) {
                             String name2 = reader.nextName();
-                            if (name2.equals("userid")) {
+                            if (name2.equals("u_id")) {
                                 u.set_userid(reader.nextInt());
-                            } else if (name2.equals("username")) {
+                            } else if (name2.equals("u_name")) {
                                 u.set_username(reader.nextString());
-                            } else if (name2.equals("nickname")) {
+                            } else if (name2.equals("u_nickname")) {
                                 u.set_nickname(reader.nextString());
-                            } else if (name2.equals("facetype")) {
+                            } else if (name2.equals("u_facetype")) {
                                 u.set_faceType(reader.nextInt());
                             } else
                                 reader.skipValue();
@@ -1494,9 +1496,72 @@ public class NetWorker {
         }
 
         Message msg = new Message();
-        msg.what = MsgType.msg_type_finduser;
+        msg.what = MsgType.MSG_ORDER_FIND_FRIEND;
         msg.obj = matchedUsers;
         BaseActivity.sendMessage(msg);
+    }
+
+    private static void handleAddFriend(String data) {
+        try {
+            Contacts dealUser = new Gson().fromJson(data, Contacts.class);
+
+            int friendID = dealUser.getUserid();
+            String friendUsername = dealUser.getUsername();
+            int operateFriendType = dealUser.getType();
+
+            //B收到A的好友申请
+            //存数据库
+            //弹出通知
+            //点击通知，进入新的朋友页面，数据库读数据并显示
+            //cmd = 1005, seq = 0, {"userid": 9, "type": 2, "username": "xxx"}  //收到的好友申请
+            if (operateFriendType == OperateFriendEnum.OPERATE_FRIEND_RECV_APPLY) {
+                dealUser.setAccept(OperateFriendEnum.RESPONSE_APPLY_REFUSE);
+                ContactsDao contactsDao = MyDbUtil.getContactsDao();
+                if (contactsDao != null) {
+                    contactsDao.insertOrReplace(dealUser);
+                }
+ /*               NotificationUtil.showNotification(MyApplication.getInstance(),
+                        friendID,
+                        friendUsername,
+                        friendUsername + "申请添加您为好友",
+                        R.drawable.ic_launcher,
+                        NewFriendActivity.class);
+
+  */
+            }
+
+            // A收到B的同意信息，存入数据库。
+            // 存数据库
+            // toast 提示
+            //cmd = 1005, seq = 0, {"userid": 9, "type": 3, "username": "xxx"} //已同意的好友申请
+            else if (operateFriendType == OperateFriendEnum.OPERATE_FRIEND_RESPONSE_APPLY) {
+                dealUser.setAccept(OperateFriendEnum.RESPONSE_APPLY_AGREE);
+                ContactsDao contactsDao = MyDbUtil.getContactsDao();
+                if (contactsDao != null) {
+                    contactsDao.insertOrReplace(dealUser);
+                }
+                String notificationText = "您和" + friendUsername + "已经成为好友";
+                if (UserInfo.isGroup(friendID))
+                    notificationText = "您已经成功加入群[" + friendUsername + "]";
+        /*        NotificationUtil.showNotification(MyApplication.getInstance(),
+                        friendID,
+                        friendUsername,
+                        notificationText,
+                        R.drawable.ic_launcher,
+                        NewFriendActivity.class);
+
+         */
+            }
+
+            //发送到 新的朋友页面
+            Message friendMsg = new Message();
+            friendMsg.what = MsgType.MSG_ORDER_ADD_FRIEND;
+            friendMsg.arg1 = dealUser.getType();
+            friendMsg.obj = dealUser;
+            BaseActivity.sendMessage(friendMsg);
+        } catch (Exception e) {
+            //e.printStackTrace();
+        }
     }
 
     private static void handleOperateFriend(String data) {

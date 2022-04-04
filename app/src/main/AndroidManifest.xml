@@ -38,12 +38,9 @@
             android:label="YTalk">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-
         <!-- 登录 -->
         <activity
             android:name=".activities.LoginActivity"
@@ -57,11 +54,22 @@
         <activity
             android:name=".activities.RegisterActivity"
             android:screenOrientation="portrait" />
+        <!-- 主界面 -->
         <activity
             android:name=".MainActivity"
-            android:screenOrientation="portrait">
-
-        </activity>
+            android:screenOrientation="portrait"/>
+        <!-- 设置 -->
+        <activity
+            android:name=".activities.SettingActivity"
+            android:screenOrientation="portrait"/>
+        <!-- 修改密码 -->
+        <activity
+            android:name=".activities.ChangePasswordActivity"
+            android:screenOrientation="portrait"/>
+        <!-- 加好友 -->
+        <activity
+            android:name=".activities.AddFriendActivity"
+            android:screenOrientation="portrait"/>
 
     </application>
 

@@ -24,7 +24,7 @@
             android:layout_centerInParent="true"
             android:focusable="true"
             android:focusableInTouchMode="true"
-            android:text="关于Flamingo"
+            android:text="关于YTalk"
             android:textColor="@android:color/white"
             android:textSize="@dimen/title_text_size" />
     </RelativeLayout>
@@ -35,7 +35,7 @@
         android:background="@color/background"
         android:orientation="vertical" >
 
-        <org.hootina.platform.widgets.ProgressWebView
+        <com.nwuking.ytalk.ProgressWebView
             android:id="@+id/wv_about_us"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent" />

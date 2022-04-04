@@ -4,7 +4,7 @@ public class SearchUser {
 
     public SearchUser(int type, String username) {
         this.type = type;
-        this.username = username;
+        this.u_name = username;
     }
 
     /**
@@ -13,7 +13,7 @@ public class SearchUser {
      */
 
     private int type;
-    private String username;
+    private String u_name;
 
     public int getType() {
         return type;
@@ -24,10 +24,10 @@ public class SearchUser {
     }
 
     public String getUsername() {
-        return username;
+        return u_name;
     }
 
     public void setUsername(String username) {
-        this.username = username;
+        this.u_name = username;
     }
 }

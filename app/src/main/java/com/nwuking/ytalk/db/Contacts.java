@@ -11,24 +11,24 @@ public class Contacts {
 
     @Keep
     public Contacts(int userid, int type) {
-        this.userid = userid;
+        this.u_id = userid;
         this.type = type;
     }
 
     @Keep
     public Contacts(int userid, int type, String username, int accept) {
-        this.userid = userid;
+        this.u_id = userid;
         this.type = type;
-        this.username = username;
+        this.u_name = username;
         this.accept = accept;
     }
 
     @Generated(hash = 1287593394)
     public Contacts(long id, int userid, int type, String username, int accept) {
         this.id = id;
-        this.userid = userid;
+        this.u_id = userid;
         this.type = type;
-        this.username = username;
+        this.u_name = username;
         this.accept = accept;
     }
 
@@ -59,9 +59,9 @@ public class Contacts {
 
     @Id
     private long id;
-    private int userid;
+    private int u_id;
     private int type;
-    private String username;
+    private String u_name;
     private int accept;
 
     public long getId() {
@@ -73,11 +73,11 @@ public class Contacts {
     }
 
     public int getUserid() {
-        return userid;
+        return u_id;
     }
 
     public void setUserid(int userid) {
-        this.userid = userid;
+        this.u_id = userid;
     }
 
     public int getType() {
@@ -89,11 +89,11 @@ public class Contacts {
     }
 
     public String getUsername() {
-        return username;
+        return u_name;
     }
 
     public void setUsername(String username) {
-        this.username = username;
+        this.u_name = username;
     }
 
     public int getAccept() {

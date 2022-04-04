@@ -154,7 +154,7 @@ public class GroupDetailActivity extends BaseActivity {
     @Override
     public void processMessage(Message msg) {
         super.processMessage(msg);
-        if (msg.what == MsgType.msg_type_operatefriend) {
+        if (msg.what == MsgType.MSG_ORDER_ADD_FRIEND) {
             //删除好友成功, 重新拉取下好友列表
             if (msg.arg1 == 5) {
                 NetWorker.getFriendList();

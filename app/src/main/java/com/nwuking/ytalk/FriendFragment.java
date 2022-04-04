@@ -177,14 +177,14 @@ public class FriendFragment extends BaseFragment {
     public void processMessage(Message msg) {
         super.processMessage(msg);
 
-        if (msg.what == MsgType.msg_type_getfriendlist) {
+        if (msg.what == MsgType.MSG_ORDER_GET_FRIENDS_LIST) {
             if (msg.arg1 != MsgType.ERROR_CODE_SUCCESS)
                 return;
 
             loadFriendList();
             //setFriendList((FriendList) msg.obj);
             mAdapter.notifyDataSetChanged();
-        } else if (msg.what == MsgType.msg_type_operatefriend) {
+        } else if (msg.what == MsgType.MSG_ORDER_ADD_FRIEND) {
             if (msg.arg1 == 3) {
                 NetWorker.getFriendList();
             }

@@ -109,18 +109,18 @@ public class AddFriendActivity extends BaseActivity implements XListView.IXListV
     @Override
     public void processMessage(Message msg) {
         super.processMessage(msg);
-        if (msg.what == MsgType.msg_type_finduser) {
+        if (msg.what == MsgType.MSG_ORDER_FIND_FRIEND) {
             findUserResult =  (List<UserInfo>)msg.obj;
             mAdapter.notifyDataSetChanged();
             if (findUserResult.isEmpty()) {
                 Toast.makeText(this,"搜索的用户不存在", Toast.LENGTH_SHORT).show();
             }
-        } else if (msg.what == MsgType.msg_type_operatefriend) {//添加好友已发送
+        } else if (msg.what == MsgType.MSG_ORDER_ADD_FRIEND) {//添加好友已发送
             if (msg.arg1 == 3) {
                 NetWorker.getFriendList();
                 //Toast.makeText(this,"添加好友成功",Toast.LENGTH_SHORT).show();
             }
-        } else if (msg.what == MsgType.msg_type_getfriendlist) {
+        } else if (msg.what == MsgType.MSG_ORDER_GET_FRIENDS_LIST) {
             if (msg.arg1 != MsgType.ERROR_CODE_SUCCESS)
                 return;
 
@@ -140,6 +140,7 @@ public class AddFriendActivity extends BaseActivity implements XListView.IXListV
         tv_search.setOnClickListener(this);
         ll_person.setOnClickListener(this);
         ll_group.setOnClickListener(this);
+        et_addSearch = (EditText)findViewById(R.id.et_addSearch);
 
         recycler.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new SearchUserAdapter();
